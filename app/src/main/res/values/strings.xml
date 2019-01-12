@@ -1,6 +1,9 @@
 <resources>
-    <string name="app_name">roshambo</string>
+    <string name="app_name">Roshambo</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="subtitle">A Simple Rock, Paper\nScissors App</string>
+
+    <string name="quit_game_menu">Quit</string>
+    <string name="play_game_menu">Play Game</string>
+    <string name="rules_menu">Rules</string>
 </resources>
