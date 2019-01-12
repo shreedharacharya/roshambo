@@ -119,14 +119,17 @@ public class PlayGameActivity extends AppCompatActivity {
         mPlayerHasThrownThisRoundState = savedInstanceState.getBoolean("hasPlayerThrown");
         mIsSelectingThrowState = savedInstanceState.getBoolean("isSelectingThrow");
 
-        mPlayerScoreTextview.setText(savedInstanceState.getInt("playerScore"));
-        mComputerScoreTextview.setText(savedInstanceState.getInt("computerScore"));
+        mPlayerScoreState = savedInstanceState.getInt("playerScore");
+        mComputerScoreState = savedInstanceState.getInt("computerScore");
+
+        mPlayerScoreTextview.setText(String.valueOf(mPlayerScoreState));
+        mComputerScoreTextview.setText(String.valueOf(mComputerScoreState));
 
         if (mPlayerHasThrownThisRoundState) {
             setPlayerThrow(savedInstanceState.getInt("playerThrow"));
             setComputerThrow(savedInstanceState.getInt("computerThrow"));
         } else if (mIsSelectingThrowState) {
-            mRockThrow.performClick();
+            mStartRoundButton.performClick();
         }
     }
 
@@ -148,7 +151,6 @@ public class PlayGameActivity extends AppCompatActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
         outState.putInt("playerScore", mPlayerScoreState);
         outState.putInt("computerScore", mComputerScoreState);
 
@@ -159,6 +161,7 @@ public class PlayGameActivity extends AppCompatActivity {
             outState.putInt("playerThrow", mPlayerThrowChoiceState);
             outState.putInt("computerThrow", mComputerThrowChoiceState);
         }
+        super.onSaveInstanceState(outState);
     }
 
     public void playerWins() {
