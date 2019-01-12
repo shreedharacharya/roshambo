@@ -9,6 +9,7 @@ public class PlayerController {
         //Responses will be a string indicating what should happen
         if (canPlayerMakeLegalMove) {
             playGameActivity.setPlayerThrow(playerMove);
+            playGameActivity.setComputerThrow(computerMove);
 
             if (playerMove.equals(computerMove)) {
                 playGameActivity.roundIsDraw();
@@ -21,7 +22,7 @@ public class PlayerController {
             }
         } else {
             playGameActivity.computerWins();
-            playGameActivity.setPlayerThrow("Illegal Move");
+            playGameActivity.setPlayerThrow(Constants.ILLEGAL_MOVE_TOO_EARLY);
         }
     }
 }

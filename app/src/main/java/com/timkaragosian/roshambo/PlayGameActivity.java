@@ -112,8 +112,6 @@ public class PlayGameActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String computerMove = new ComputerController().computerMakesMove();
-                setComputerThrow(computerMove);
-
                 new PlayerController().playerThowsForResult(PlayGameActivity.this, Constants.ROCK, computerMove, mCanPlayerMakeLegalMove);
 
                 mStartRoundButton.setVisibility(View.VISIBLE);
@@ -126,16 +124,12 @@ public class PlayGameActivity extends AppCompatActivity {
         mPaperThrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setPlayerThrow(Constants.PAPER);
-                mPlayerThrowResultTextview.setText(R.string.paper);
+                String computerMove = new ComputerController().computerMakesMove();
+                new PlayerController().playerThowsForResult(PlayGameActivity.this, Constants.PAPER, computerMove, mCanPlayerMakeLegalMove);
 
                 mComputerThrowImageview.setVisibility(View.VISIBLE);
                 mStartRoundButton.setVisibility(View.VISIBLE);
 
-                setComputerThrow(Constants.PAPER);
-                mComputerThrowResultTextview.setText(R.string.paper);
-
-                roundIsDraw();
                 mGameController.countdownHandler.removeCallbacksAndMessages(null);
             }
         });
@@ -143,16 +137,12 @@ public class PlayGameActivity extends AppCompatActivity {
         mScissorsThrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setPlayerThrow(Constants.SCISSORS);
-                mPlayerThrowResultTextview.setText(R.string.scissors);
+                String computerMove = new ComputerController().computerMakesMove();
+                new PlayerController().playerThowsForResult(PlayGameActivity.this, Constants.SCISSORS, computerMove, mCanPlayerMakeLegalMove);
 
                 mComputerThrowImageview.setVisibility(View.VISIBLE);
                 mStartRoundButton.setVisibility(View.VISIBLE);
 
-                setComputerThrow(Constants.ROCK);
-                mComputerThrowResultTextview.setText(R.string.rock);
-
-                computerWins();
                 mGameController.countdownHandler.removeCallbacksAndMessages(null);
             }
         });
@@ -226,7 +216,8 @@ public class PlayGameActivity extends AppCompatActivity {
                 return R.drawable.paper;
             case Constants.SCISSORS:
                 return R.drawable.scissors;
-            case Constants.ILLEGAL_MOVE:
+            case Constants.ILLEGAL_MOVE_NONE_THROWN:
+            case Constants.ILLEGAL_MOVE_TOO_EARLY:
                 return R.drawable.illegal_move;
             default:
                 return 0;

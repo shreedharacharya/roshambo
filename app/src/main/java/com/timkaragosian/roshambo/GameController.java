@@ -32,7 +32,7 @@ public class GameController {
             public void run() {
                 if (!playGameActivity.mPlayerHasThrownThisRoundState) {
                     playGameActivity.computerWins();
-                    playGameActivity.setPlayerThrow("Illegal Move");
+                    playGameActivity.setPlayerThrow(Constants.ILLEGAL_MOVE_NONE_THROWN);
                 }
 
                 playGameActivity.mCanPlayerMakeLegalMove = false;
