@@ -1,6 +1,8 @@
 package com.timkaragosian.roshambo;
 
 
+import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -23,6 +25,7 @@ public class MainMenuFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        setRetainInstance(true);
         return inflater.inflate(R.layout.fragment_main_menu, container, false);
     }
 
@@ -46,7 +49,8 @@ public class MainMenuFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (getActivity() != null && getActivity().getSupportFragmentManager() != null) {
-                    ((MainActivity)getActivity()).showFragment(new PlayGameFragment());
+                    Intent intent = new Intent(getActivity(), PlayGameActivity.class);
+                    getActivity().startActivity(intent);
                 }
             }
         });
@@ -55,7 +59,7 @@ public class MainMenuFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (getActivity() != null && getActivity().getSupportFragmentManager() != null) {
-                    ((MainActivity)getActivity()).showFragment(new RulesFragment());
+                    ((MainActivity) getActivity()).showFragment(new RulesFragment());
                 }
             }
         });
