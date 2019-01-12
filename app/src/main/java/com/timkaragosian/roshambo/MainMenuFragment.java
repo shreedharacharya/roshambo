@@ -45,20 +45,17 @@ public class MainMenuFragment extends Fragment {
         mPlayGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //have it begin game
+                if (getActivity() != null && getActivity().getSupportFragmentManager() != null) {
+                    ((MainActivity)getActivity()).showFragment(new PlayGameFragment());
+                }
             }
         });
 
         mRules.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RulesFragment rulesFragment = new RulesFragment();
-
                 if (getActivity() != null && getActivity().getSupportFragmentManager() != null) {
-                    getActivity().getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.main_activity_layout, rulesFragment, rulesFragment.getTag())
-                            .commit();
+                    ((MainActivity)getActivity()).showFragment(new RulesFragment());
                 }
             }
         });
