@@ -17,12 +17,12 @@
     <string name="rules_menu">Rules</string>
     <string name="return_main_menu">Return To Main Menu</string>
 
-    <string name="rule_1">1. Each round is a 1 v 1 match of Rock, Paper, Scissors against a computer controlled opponent</string>
-    <string name="rule_2">2. When a round begins, both players will begin with no throw and a countdown from 3 will begin</string>
-    <string name="rule_3">3. When the countdown reaches 0, you will be instructed to throw a move</string>
-    <string name="rule_4">4. At this point you will have 1 second to throw a Rock, Paper, or Scissors by selecting it on the screen</string>
-    <string name="rule_5">5. Rock beats Scissors. Scissors beats Paper. Paper beats Rock. Wins are indicated under each player\'s name</string>
-    <string name="rule_6">6. An early throw or no move throw will result in an illegal move and the player will lose the round. The computer will never make an illegal move</string>
+    <string name="rule_1">1. Each round is a 1 v 1 match of Rock, Paper, Scissors against a computer controlled opponent.</string>
+    <string name="rule_2">2. When a round begins, both players will begin with no throw and a countdown from 3 will begin.</string>
+    <string name="rule_3">3. When the countdown reaches 0, you will be instructed to throw a move.</string>
+    <string name="rule_4">4. At this point you will have 1 second to throw a Rock, Paper, or Scissors by selecting it on the screen.</string>
+    <string name="rule_5">5. Rock beats Scissors. Scissors beats Paper. Paper beats Rock. If both players choose the same row, this results in a draw and no one is awarded a win. Wins are indicated under each player\'s name.</string>
+    <string name="rule_6">6. An early throw or no move throw will result in an illegal move and the player will lose the round. The computer will never make an illegal move.</string>
     <string name="rule_more_information">Click here for more information on Rock, Paper, Scissors</string>
 
 </resources>

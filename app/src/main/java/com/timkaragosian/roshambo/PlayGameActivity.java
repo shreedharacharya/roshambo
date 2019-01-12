@@ -88,6 +88,8 @@ public class PlayGameActivity extends AppCompatActivity {
 
                 mComputerWinsTextview.setVisibility(View.GONE);
                 mPlayerWinsTextview.setVisibility(View.GONE);
+                mComputerThrowResultContainer.setVisibility(View.GONE);
+                mPlayerThrowResultContainer.setVisibility(View.GONE);
 
                 mCountdownTextview.setText("3... 2... 1... Throw!");
                 mPlayerHasThrownThisRoundState = false;
@@ -122,7 +124,7 @@ public class PlayGameActivity extends AppCompatActivity {
                 mStartRoundButton.setVisibility(View.VISIBLE);
 
                 setComputerThrow(R.drawable.paper);
-                mComputerThrowResultTextview.setText(R.string.rock);
+                mComputerThrowResultTextview.setText(R.string.paper);
 
                 roundIsDraw();
             }
