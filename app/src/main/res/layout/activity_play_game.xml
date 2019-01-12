@@ -157,6 +157,7 @@
 
     <TextView
         android:id="@+id/countdown_textview"
+        android:textSize="25sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
