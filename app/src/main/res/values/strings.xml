@@ -25,4 +25,6 @@
     <string name="rule_6">6. An early throw or no move throw will result in an illegal move and the player will lose the round. The computer will never make an illegal move.</string>
     <string name="rule_more_information">Click here for more information on Rock, Paper, Scissors</string>
 
+    <string name="get_ready">GET READY!</string>
+    <string name="throw_now">THROW NOW!</string>
 </resources>

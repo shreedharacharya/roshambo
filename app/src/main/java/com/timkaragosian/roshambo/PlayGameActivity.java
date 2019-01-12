@@ -42,6 +42,7 @@ public class PlayGameActivity extends AppCompatActivity {
 
     int mPlayerScoreState;
     int mComputerScoreState;
+    int mSeconds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +56,7 @@ public class PlayGameActivity extends AppCompatActivity {
         }
     }
 
-    public void initViews() {
+    private void initViews() {
         mStartRoundButton = findViewById(R.id.start_round_button);
 
         mRockThrow = findViewById(R.id.rock_throw_choice_imagebutton);
@@ -82,19 +83,8 @@ public class PlayGameActivity extends AppCompatActivity {
         mStartRoundButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mStartRoundButton.setVisibility(View.GONE);
-                mPlayerThrowChoicesContainer.setVisibility(View.VISIBLE);
-                mCountdownTextview.setVisibility(View.VISIBLE);
-
-                mComputerWinsTextview.setVisibility(View.GONE);
-                mPlayerWinsTextview.setVisibility(View.GONE);
-                mComputerThrowResultContainer.setVisibility(View.GONE);
-                mPlayerThrowResultContainer.setVisibility(View.GONE);
-
-                mCountdownTextview.setText("3... 2... 1... Throw!");
-                mPlayerHasThrownThisRoundState = false;
-                mIsSelectingThrowState = true;
-                mPlayerThrowChoiceState = 0;
+                mCountdownTextview.setText(R.string.get_ready);
+                setupRound(3);
             }
         });
 
@@ -171,7 +161,11 @@ public class PlayGameActivity extends AppCompatActivity {
                 roundIsDraw();
             }
         } else if (mIsSelectingThrowState) {
-            mStartRoundButton.performClick();
+            int secondsRemaining = savedInstanceState.getInt("secondsRemaining");
+            if (secondsRemaining > 0) {
+                mCountdownTextview.setText(String.valueOf(secondsRemaining));
+                setupRound(secondsRemaining - 1);
+            }
         }
     }
 
@@ -208,6 +202,11 @@ public class PlayGameActivity extends AppCompatActivity {
             outState.putBoolean("hasPlayerWon", mHasPlayerWon);
             outState.putBoolean("hasComputerWon", mHasComputerWon);
         }
+
+        if (mIsSelectingThrowState) {
+            outState.putInt("secondsRemaining", mSeconds);
+        }
+
         super.onSaveInstanceState(outState);
     }
 
@@ -243,5 +242,27 @@ public class PlayGameActivity extends AppCompatActivity {
 
         mPlayerWinsTextview.setVisibility(View.VISIBLE);
         mComputerWinsTextview.setVisibility(View.VISIBLE);
+    }
+
+    public void updateCountdownTimer(String updateText, int seconds) {
+        mCountdownTextview.setText(updateText);
+        mSeconds = seconds;
+    }
+
+    private void setupRound(int seconds) {
+        mStartRoundButton.setVisibility(View.GONE);
+        mPlayerThrowChoicesContainer.setVisibility(View.VISIBLE);
+        mCountdownTextview.setVisibility(View.VISIBLE);
+
+        mComputerWinsTextview.setVisibility(View.GONE);
+        mPlayerWinsTextview.setVisibility(View.GONE);
+        mComputerThrowResultContainer.setVisibility(View.GONE);
+        mPlayerThrowResultContainer.setVisibility(View.GONE);
+
+        new GameController().startCountdownTimer(PlayGameActivity.this, seconds);
+
+        mPlayerHasThrownThisRoundState = false;
+        mIsSelectingThrowState = true;
+        mPlayerThrowChoiceState = 0;
     }
 }
