@@ -20,17 +20,25 @@ public class PlayGameActivity extends AppCompatActivity {
     TextView mCountdownTextview;
     TextView mPlayerScoreTextview;
     TextView mComputerScoreTextview;
+    TextView mPlayerWinsTextview;
+    TextView mComputerWinsTextview;
+    TextView mComputerThrowResultTextview;
+    TextView mPlayerThrowResultTextview;
 
     ImageView mPlayerThrowImageView;
     ImageView mComputerThrowImageview;
 
     LinearLayout mPlayerThrowChoicesContainer;
+    LinearLayout mPlayerThrowResultContainer;
+    LinearLayout mComputerThrowResultContainer;
 
     int mComputerThrowChoiceState;
     int mPlayerThrowChoiceState;
 
     boolean mIsSelectingThrowState;
     boolean mPlayerHasThrownThisRoundState;
+    boolean mHasPlayerWon;
+    boolean mHasComputerWon;
 
     int mPlayerScoreState;
     int mComputerScoreState;
@@ -57,11 +65,17 @@ public class PlayGameActivity extends AppCompatActivity {
         mCountdownTextview = findViewById(R.id.countdown_textview);
         mPlayerScoreTextview = findViewById(R.id.player_score);
         mComputerScoreTextview = findViewById(R.id.computer_score);
+        mComputerThrowResultTextview = findViewById(R.id.computer_throw_textview);
+        mPlayerThrowResultTextview = findViewById(R.id.player_throw_textview);
+        mPlayerWinsTextview = findViewById(R.id.player_wins_textview);
+        mComputerWinsTextview = findViewById(R.id.computer_wins_textview);
 
         mComputerThrowImageview = findViewById(R.id.computer_throw_imageview);
         mPlayerThrowImageView = findViewById(R.id.player_throw_imageview);
 
         mPlayerThrowChoicesContainer = findViewById(R.id.player_throw_choices_container);
+        mPlayerThrowResultContainer = findViewById(R.id.player_throw_result_container);
+        mComputerThrowResultContainer = findViewById(R.id.computer_throw_result_container);
     }
 
     private void initListeners() {
@@ -70,9 +84,10 @@ public class PlayGameActivity extends AppCompatActivity {
             public void onClick(View v) {
                 mStartRoundButton.setVisibility(View.GONE);
                 mPlayerThrowChoicesContainer.setVisibility(View.VISIBLE);
+                mCountdownTextview.setVisibility(View.VISIBLE);
 
-                mPlayerThrowImageView.setVisibility(View.GONE);
-                mComputerThrowImageview.setVisibility(View.GONE);
+                mComputerWinsTextview.setVisibility(View.GONE);
+                mPlayerWinsTextview.setVisibility(View.GONE);
 
                 mCountdownTextview.setText("3... 2... 1... Throw!");
                 mPlayerHasThrownThisRoundState = false;
@@ -85,9 +100,14 @@ public class PlayGameActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 setPlayerThrow(R.drawable.rock_image);
+                mPlayerThrowResultTextview.setText(R.string.rock);
+
                 mComputerThrowImageview.setVisibility(View.VISIBLE);
                 mStartRoundButton.setVisibility(View.VISIBLE);
+
                 setComputerThrow(R.drawable.scissors);
+                mComputerThrowResultTextview.setText(R.string.scissors);
+
                 playerWins();
             }
         });
@@ -96,10 +116,15 @@ public class PlayGameActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 setPlayerThrow(R.drawable.paper);
+                mPlayerThrowResultTextview.setText(R.string.paper);
+
                 mComputerThrowImageview.setVisibility(View.VISIBLE);
                 mStartRoundButton.setVisibility(View.VISIBLE);
-                setComputerThrow(R.drawable.scissors);
-                computerWins();
+
+                setComputerThrow(R.drawable.paper);
+                mComputerThrowResultTextview.setText(R.string.rock);
+
+                roundIsDraw();
             }
         });
 
@@ -107,9 +132,14 @@ public class PlayGameActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 setPlayerThrow(R.drawable.scissors);
+                mPlayerThrowResultTextview.setText(R.string.scissors);
+
                 mComputerThrowImageview.setVisibility(View.VISIBLE);
                 mStartRoundButton.setVisibility(View.VISIBLE);
+
                 setComputerThrow(R.drawable.rock_image);
+                mComputerThrowResultTextview.setText(R.string.rock);
+
                 computerWins();
             }
         });
@@ -128,6 +158,16 @@ public class PlayGameActivity extends AppCompatActivity {
         if (mPlayerHasThrownThisRoundState) {
             setPlayerThrow(savedInstanceState.getInt("playerThrow"));
             setComputerThrow(savedInstanceState.getInt("computerThrow"));
+            mHasPlayerWon = savedInstanceState.getBoolean("hasPlayerWon");
+            mHasComputerWon = savedInstanceState.getBoolean("hasComputerWon");
+
+            if (mHasPlayerWon) {
+                playerWins();
+            } else if (mHasComputerWon) {
+                computerWins();
+            } else {
+                roundIsDraw();
+            }
         } else if (mIsSelectingThrowState) {
             mStartRoundButton.performClick();
         }
@@ -135,8 +175,10 @@ public class PlayGameActivity extends AppCompatActivity {
 
     public void setPlayerThrow(int resource) {
         mPlayerThrowImageView.setImageResource(resource);
-        mPlayerThrowImageView.setVisibility(View.VISIBLE);
+        mPlayerThrowResultContainer.setVisibility(View.VISIBLE);
+
         mPlayerThrowChoicesContainer.setVisibility(View.GONE);
+        mCountdownTextview.setVisibility(View.GONE);
 
         mPlayerHasThrownThisRoundState = true;
         mPlayerThrowChoiceState = resource;
@@ -145,7 +187,8 @@ public class PlayGameActivity extends AppCompatActivity {
 
     public void setComputerThrow(int resource) {
         mComputerThrowImageview.setImageResource(resource);
-        mComputerThrowImageview.setVisibility(View.VISIBLE);
+        mComputerThrowResultContainer.setVisibility(View.VISIBLE);
+
         mComputerThrowChoiceState = resource;
     }
 
@@ -160,6 +203,8 @@ public class PlayGameActivity extends AppCompatActivity {
         if (mPlayerHasThrownThisRoundState) {
             outState.putInt("playerThrow", mPlayerThrowChoiceState);
             outState.putInt("computerThrow", mComputerThrowChoiceState);
+            outState.putBoolean("hasPlayerWon", mHasPlayerWon);
+            outState.putBoolean("hasComputerWon", mHasComputerWon);
         }
         super.onSaveInstanceState(outState);
     }
@@ -169,13 +214,32 @@ public class PlayGameActivity extends AppCompatActivity {
         score++;
         mPlayerScoreTextview.setText(String.valueOf(score));
         mPlayerScoreState = score;
+
+        mHasPlayerWon = true;
+        mHasComputerWon = false;
+
+        mPlayerWinsTextview.setText(R.string.player_wins);
+        mPlayerWinsTextview.setVisibility(View.VISIBLE);
     }
 
     public void computerWins() {
         int score = Integer.valueOf(mComputerScoreTextview.getText().toString());
         score++;
 
+        mHasPlayerWon = false;
+        mHasComputerWon = false;
+
+        mComputerWinsTextview.setText(R.string.computer_wins);
         mComputerScoreTextview.setText(String.valueOf(score));
         mComputerScoreState = score;
+        mComputerWinsTextview.setVisibility(View.VISIBLE);
+    }
+
+    public void roundIsDraw() {
+        mPlayerWinsTextview.setText(R.string.draw_result);
+        mComputerWinsTextview.setText(R.string.draw_result);
+
+        mPlayerWinsTextview.setVisibility(View.VISIBLE);
+        mComputerWinsTextview.setVisibility(View.VISIBLE);
     }
 }

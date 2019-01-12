@@ -4,6 +4,14 @@
     <string name="subtitle">A Simple Rock, Paper\nScissors App</string>
     <string name="roshambo_rules">Roshambo Rules</string>
 
+    <string name="player_wins">Player Wins!</string>
+    <string name="computer_wins">Computer Wins!</string>
+    <string name="draw_result">Draw!</string>
+
+    <string name="rock">Rock</string>
+    <string name="paper">Paper</string>
+    <string name="scissors">Scissors</string>
+
     <string name="quit_game_menu">Quit</string>
     <string name="play_game_menu">Play Game</string>
     <string name="rules_menu">Rules</string>
