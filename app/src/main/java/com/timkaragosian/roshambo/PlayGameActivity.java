@@ -57,10 +57,17 @@ public class PlayGameActivity extends AppCompatActivity {
     public boolean mCanPlayerMakeLegalMove = false;
     public boolean mPlayerHasThrownThisRoundState;
 
+    ComputerController mComputerController;
+    GameController mGameController;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_game);
+
+        mComputerController = new ComputerController();
+        mGameController = new GameController();
+
         initViews();
         initListeners();
 
@@ -111,6 +118,8 @@ public class PlayGameActivity extends AppCompatActivity {
 
                 mStartRoundButton.setVisibility(View.VISIBLE);
                 mComputerThrowImageview.setVisibility(View.VISIBLE);
+
+                mGameController.countdownHandler.removeCallbacksAndMessages(null);
             }
         });
 
@@ -127,6 +136,7 @@ public class PlayGameActivity extends AppCompatActivity {
                 mComputerThrowResultTextview.setText(R.string.paper);
 
                 roundIsDraw();
+                mGameController.countdownHandler.removeCallbacksAndMessages(null);
             }
         });
 
@@ -143,6 +153,7 @@ public class PlayGameActivity extends AppCompatActivity {
                 mComputerThrowResultTextview.setText(R.string.rock);
 
                 computerWins();
+                mGameController.countdownHandler.removeCallbacksAndMessages(null);
             }
         });
     }
@@ -294,7 +305,7 @@ public class PlayGameActivity extends AppCompatActivity {
         mComputerThrowResultContainer.setVisibility(View.GONE);
         mPlayerThrowResultContainer.setVisibility(View.GONE);
 
-        new GameController().startCountdownTimer(PlayGameActivity.this, seconds);
+        mGameController.startCountdownTimer(PlayGameActivity.this, seconds);
 
         mPlayerHasThrownThisRoundState = false;
         mIsSelectingThrowState = true;

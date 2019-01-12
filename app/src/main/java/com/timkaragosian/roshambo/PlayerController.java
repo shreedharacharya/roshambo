@@ -4,12 +4,10 @@ import java.util.ArrayList;
 
 public class PlayerController {
     //takes in user input handles accordingly
-    ArrayList<String> playerMoves;
 
     public void playerThowsForResult(PlayGameActivity playGameActivity, String playerMove, String computerMove, Boolean canPlayerMakeLegalMove) {
         //Responses will be a string indicating what should happen
         if (canPlayerMakeLegalMove) {
-            playerMoves.add(playerMove);
             playGameActivity.setPlayerThrow(playerMove);
 
             if (playerMove.equals(computerMove)) {
