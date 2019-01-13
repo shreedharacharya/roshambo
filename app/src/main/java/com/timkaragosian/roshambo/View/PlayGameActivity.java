@@ -212,7 +212,7 @@ public class PlayGameActivity extends AppCompatActivity {
         rpsGame.setPlayerMoveDescription(savedInstanceState.getString(PLAYER_THROW_DESCRIPTION_VALUE_SAVE_STATE));
         rpsGame.setComputerMoveDescription(savedInstanceState.getString(COMPUTER_THROW_DESCRIPTION_VALUE_SAVE_STATE));
 
-        mRpsGamePresenter.restoreFromSaveState(rpsGame);
+        mRpsGamePresenter.setGameState(rpsGame);
     }
 
     //save everything in rpsGame obj on presenter to be restored

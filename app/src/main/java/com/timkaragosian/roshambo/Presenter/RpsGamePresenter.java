@@ -9,9 +9,9 @@ import java.util.Random;
 
 /**
  * Class that prepares all the data to be displayed in the view from user interaction in the View (PlayGameActivity)
- *
+ * <p>
  * Uses RpsGame as the basis for all data management (the Model)
- *
+ * <p>
  * All game logic is contained here
  */
 public class RpsGamePresenter {
@@ -39,15 +39,15 @@ public class RpsGamePresenter {
     RpsGame mRpsGame = new RpsGame();
     OnGameStateChangedListener mOnGameStateChangedListener;
 
-    private final Handler countdownHandler = new Handler();
-    private final Handler throwNowHandler = new Handler();
+    public Handler mCountdownHandler = new Handler();
+    public Handler mThrowNowHandler = new Handler();
 
     public RpsGamePresenter(OnGameStateChangedListener listener) {
         this.setOnGameStateChangedListener(listener);
     }
 
     //sets object from save state and updates view
-    public void restoreFromSaveState(RpsGame rpsGame) {
+    public void setGameState(RpsGame rpsGame) {
         this.mRpsGame = rpsGame;
         notifyObservers();
     }
@@ -78,7 +78,7 @@ public class RpsGamePresenter {
             computerThrowsMove();
         }
 
-        countdownHandler.removeCallbacksAndMessages(null);
+        mCountdownHandler.removeCallbacksAndMessages(null);
 
         mRpsGame.setPlayerThrowImage(getImageResourceIdFromThrowValue(throwValue));
         mRpsGame.setPlayerMoveDescription(getThrowDisplayDescriptionFromThrowValue(throwValue));
@@ -113,7 +113,7 @@ public class RpsGamePresenter {
     }
 
     //determines what move computer will make and sets to object
-    private void computerThrowsMove() {
+    public void computerThrowsMove() {
         Random random = new Random();
         int selection = random.nextInt(3);
 
@@ -186,12 +186,9 @@ public class RpsGamePresenter {
 
     //Starts timer to display a countdown
     public void startCountdownHandler(final int seconds) {
-        mRpsGame.setCountDownSeconds(seconds);
-        mRpsGame.setIsGamePhaseRoundComplete(false);
-        mRpsGame.setHasPlayerWon(false);
-        mRpsGame.setHasComputerWon(false);
+        setupCountdownHandler(seconds);
 
-        countdownHandler.postDelayed(new Runnable() {
+        mCountdownHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 mRpsGame.setCountDownDisplayValue(String.valueOf(seconds));
@@ -207,31 +204,46 @@ public class RpsGamePresenter {
         }, 1000);
     }
 
+    public void setupCountdownHandler(int seconds) {
+        mRpsGame.setCountDownSeconds(seconds);
+        mRpsGame.setIsGamePhaseRoundComplete(false);
+        mRpsGame.setHasPlayerWon(false);
+        mRpsGame.setHasComputerWon(false);
+    }
+
     //Sets up game to enable user to throw a move for one second and delivers message
     // if no throw is chosen during this time, the player loses with an illegal move of throwing too late
-    public void startThrowNowHandler() {
-        countdownHandler.removeCallbacksAndMessages(null);
-        mRpsGame.setCanPlayerMakeLegalMove(true);
-        mRpsGame.setCountDownDisplayValue(THROW_NOW_MSG);
-        notifyObservers();
+    private void startThrowNowHandler() {
+        setupThrowNowHandler();
 
-        throwNowHandler.postDelayed(new Runnable() {
+        mThrowNowHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 if (!mRpsGame.getHasPlayerHasThrownThisRound()) {
-                    mRpsGame.setHasComputerWon(true);
-                    mRpsGame.setHasPlayerWon(false);
-                    mRpsGame.setComputerScore(mRpsGame.getComputerScore() + 1);
-                    mRpsGame.setIsGamePhaseRoundComplete(true);
-                    mRpsGame.setIsGamePhaseCountDown(false);
-                    mRpsGame.setCanPlayerMakeLegalMove(false);
-                    mRpsGame.setmComputerThrowImage(0);
-                    mRpsGame.setPlayerThrowImage(ILLEGAL_THROW_IMAGE_RESOURCE_ID);
-                    mRpsGame.setPlayerMoveDescription(ILLEGAL_MOVE_NONE_THROWN_DISPLAY_DESCRIPTION);
-                    mRpsGame.setPlayerThrowValue(4); //set to whatever needs to be illegal move thrown too late
+                    playerIllegalMoveTooLate();
                 }
                 notifyObservers();
             }
         }, 1000);
+    }
+
+    public void setupThrowNowHandler() {
+        mCountdownHandler.removeCallbacksAndMessages(null);
+        mRpsGame.setCanPlayerMakeLegalMove(true);
+        mRpsGame.setCountDownDisplayValue(THROW_NOW_MSG);
+        notifyObservers();
+    }
+
+    public void playerIllegalMoveTooLate() {
+        mRpsGame.setHasComputerWon(true);
+        mRpsGame.setHasPlayerWon(false);
+        mRpsGame.setComputerScore(mRpsGame.getComputerScore() + 1);
+        mRpsGame.setIsGamePhaseRoundComplete(true);
+        mRpsGame.setIsGamePhaseCountDown(false);
+        mRpsGame.setCanPlayerMakeLegalMove(false);
+        mRpsGame.setmComputerThrowImage(0);
+        mRpsGame.setPlayerThrowImage(ILLEGAL_THROW_IMAGE_RESOURCE_ID);
+        mRpsGame.setPlayerMoveDescription(ILLEGAL_MOVE_NONE_THROWN_DISPLAY_DESCRIPTION);
+        mRpsGame.setPlayerThrowValue(4);
     }
 }
