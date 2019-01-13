@@ -13,7 +13,12 @@ import android.widget.Button;
 
 import com.timkaragosian.roshambo.R;
 
-
+/**
+ * First View the user will see when starting the application
+ *
+ * Basic layout with buttons that take you to other fragments or activities
+ *
+ */
 public class MainMenuFragment extends Fragment {
 
     Button mPlayGame;

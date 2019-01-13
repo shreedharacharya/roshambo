@@ -13,6 +13,11 @@ import com.timkaragosian.roshambo.Model.RpsGame;
 import com.timkaragosian.roshambo.Presenter.RpsGamePresenter;
 import com.timkaragosian.roshambo.R;
 
+/**
+ * Activity that handles all the views for the game
+ *
+ * Presentation layer feeds this a state and the game state will be shown
+ */
 public class PlayGameActivity extends AppCompatActivity {
 
     private static final String IS_GAME_PHASE_COUNTDOWN_SAVE_STATE = "isGamePhaseCountdown";

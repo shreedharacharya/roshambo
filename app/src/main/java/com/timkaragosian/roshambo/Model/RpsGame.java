@@ -1,5 +1,8 @@
 package com.timkaragosian.roshambo.Model;
 
+/**
+ * Data model for the state of the current game a user is playing
+ */
 public class RpsGame {
     private boolean mIsGamePhaseCountDown;
     private boolean mIsGamePhaseRoundComplete;

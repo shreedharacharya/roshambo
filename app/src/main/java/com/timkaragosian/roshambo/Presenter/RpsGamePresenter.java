@@ -7,6 +7,13 @@ import com.timkaragosian.roshambo.R;
 
 import java.util.Random;
 
+/**
+ * Class that prepares all the data to be displayed in the view from user interaction in the View (PlayGameActivity)
+ *
+ * Uses RpsGame as the basis for all data management (the Model)
+ *
+ * All game logic is contained here
+ */
 public class RpsGamePresenter {
     private static final String GET_READY_MGS = "GET READY!";
     private static final String THROW_NOW_MSG = "THROW NOW!";
@@ -168,8 +175,8 @@ public class RpsGamePresenter {
         }
     }
 
-    public void setOnGameStateChangedListener(OnGameStateChangedListener l) {
-        this.mOnGameStateChangedListener = l;
+    public void setOnGameStateChangedListener(OnGameStateChangedListener listener) {
+        this.mOnGameStateChangedListener = listener;
     }
 
     //setup interface to handle when game state changes

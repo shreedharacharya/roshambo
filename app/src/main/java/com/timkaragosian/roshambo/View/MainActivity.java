@@ -7,6 +7,16 @@ import android.os.Bundle;
 
 import com.timkaragosian.roshambo.R;
 
+/**
+ * Activity where application begins
+ * <p>
+ * Locked in Portrait mode
+ * <p>
+ * Shows MainMenuFragment first
+ * <p>
+ * If you press back while in RulesFragment it will take you back to MainMenuFragment
+ */
+
 public class MainActivity extends AppCompatActivity {
 
     Fragment oldFragment;
@@ -16,11 +26,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (oldFragment != null) {
-            showFragment(oldFragment);
-        } else {
-            showFragment(new MainMenuFragment());
-        }
+        showFragment(new MainMenuFragment());
+
     }
 
     @Override
@@ -42,16 +49,5 @@ public class MainActivity extends AppCompatActivity {
                 .beginTransaction()
                 .replace(R.id.main_activity_layout, fragment, fragment.getTag())
                 .commit();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-
-        MainMenuFragment mainMenuFragment = new MainMenuFragment();
-
-        if (newConfig.orientation==Configuration.ORIENTATION_LANDSCAPE && oldFragment.getClass() == mainMenuFragment.getClass()){
-                        
-        }
     }
 }

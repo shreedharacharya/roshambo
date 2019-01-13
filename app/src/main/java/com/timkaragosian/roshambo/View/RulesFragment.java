@@ -17,7 +17,9 @@ import com.timkaragosian.roshambo.R;
 
 
 /**
- * A simple {@link Fragment} subclass.
+ * Fragment from MainMenuFragment
+ * Shows user the rules to the game
+ * Has link to more information about the game
  */
 public class RulesFragment extends Fragment {
 
