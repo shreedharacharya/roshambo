@@ -2,7 +2,6 @@ package com.timkaragosian.roshambo.View;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -10,25 +9,28 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.timkaragosian.roshambo.Model.Constants;
-import com.timkaragosian.roshambo.Presenter.ComputerController;
-import com.timkaragosian.roshambo.Presenter.GameController;
-import com.timkaragosian.roshambo.Presenter.PlayerController;
 import com.timkaragosian.roshambo.Model.RpsGame;
 import com.timkaragosian.roshambo.Presenter.RpsGamePresenter;
 import com.timkaragosian.roshambo.R;
 
 public class PlayGameActivity extends AppCompatActivity {
 
-    private static final String SECONDS_REMAINING = "secondsRemaining";
-    private static final String HAS_PLAYER_THROWN = "hasPlayerThrown";
-    private static final String PLAYER_SCORE = "playerScore";
-    private static final String COMPUTER_SCORE = "computerScore";
-    private static final String IS_SELECTING_THROW = "isSelectingThrow";
-    private static final String PLAYER_THROW = "playerThrow";
-    private static final String COMPUTER_THROW = "computerThrow";
-    private static final String HAS_PLAYER_WON = "hasPlayerWon";
-    private static final String HAS_COMPUTER_WON = "hasComputerWon";
+    private static final String IS_GAME_PHASE_COUNTDOWN_SAVE_STATE = "isGamePhaseCountdown";
+    private static final String IS_GAME_PHASE_ROUND_COMPLETE_SAVE_STATE = "isRoundComplete";
+    private static final String HAS_PLAYER_WON_SAVE_STATE = "hasPlayerWon";
+    private static final String HAS_COMPUTER_WON_SAVE_STATE = "hasComputerWon";
+    private static final String CAN_PLAYER_MAKE_LEGAL_MOVE_SAVE_STATE = "hasComputerWon";
+    private static final String HAS_PLAYER_THROWN_SAVE_STATE = "hasPlayerThrown";
+    private static final String PLAYER_SCORE_SAVE_STATE = "playerScore";
+    private static final String COMPUTER_SCORE_SAVE_STATE = "computerScore";
+    private static final String SECONDS_REMAINING_SAVE_STATE = "secondsRemaining";
+    private static final String PLAYER_THROW_VALUE_SAVE_STATE = "playerThrow";
+    private static final String COMPUTER_THROW_VALUE_SAVE_STATE = "computerThrow";
+    private static final String COMPUTER_THROW_IMAGE_SAVE_STATE = "computerThrowImage";
+    private static final String PLAYER_THROW_IMAGE_SAVE_STATE = "computerThrowImage";
+    private static final String COUNTDOWN_DESCRIPTION_VALUE_SAVE_STATE = "countdownDescription";
+    private static final String PLAYER_THROW_DESCRIPTION_VALUE_SAVE_STATE = "playerThrowDescription";
+    private static final String COMPUTER_THROW_DESCRIPTION_VALUE_SAVE_STATE = "computerThrowDescription";
 
     Button mStartRoundButton;
 
@@ -51,23 +53,6 @@ public class PlayGameActivity extends AppCompatActivity {
     LinearLayout mPlayerThrowResultContainer;
     LinearLayout mComputerThrowResultContainer;
 
-    String mComputerThrowChoiceState;
-    String mPlayerThrowChoiceState;
-
-    boolean mIsSelectingThrowState;
-    boolean mHasPlayerWon;
-    boolean mHasComputerWon;
-
-    int mPlayerScoreState;
-    int mComputerScoreState;
-    int mSeconds;
-
-    public boolean mCanPlayerMakeLegalMove = false;
-    public boolean mPlayerHasThrownThisRoundState;
-
-    ComputerController mComputerController;
-    GameController mGameController;
-
     RpsGamePresenter mRpsGamePresenter;
 
     //updates the view with whatever state it is given from the presenter
@@ -84,6 +69,8 @@ public class PlayGameActivity extends AppCompatActivity {
                 mComputerThrowResultContainer.setVisibility(View.GONE);
                 mPlayerThrowResultContainer.setVisibility(View.GONE);
 
+                mRpsGamePresenter.startCountdownHandler(rpsGame.getCountDownSeconds());
+
                 mCountdownTextview.setText(rpsGame.getCountDownDisplayValue());
             } else if (rpsGame.getIsGamePhaseRoundComplete()) {
                 //setup basic view visibility
@@ -97,11 +84,11 @@ public class PlayGameActivity extends AppCompatActivity {
                     mPlayerThrowImageView.setImageDrawable(getResources().getDrawable(rpsGame.getPlayerThrowImage()));
                 }
 
-                if (rpsGame.getPlayerThrowValue() == RpsGamePresenter.ILLEGAL_THROW_TOO_EARLY_VALUE && rpsGame.getPlayerThrowValue() == RpsGamePresenter.ILLEGAL_THROW_TOO_LATE_VALUE) {
+                if (!(rpsGame.getPlayerThrowValue() == RpsGamePresenter.ILLEGAL_THROW_TOO_EARLY_VALUE || rpsGame.getPlayerThrowValue() == RpsGamePresenter.ILLEGAL_THROW_TOO_LATE_VALUE)) {
                     mComputerThrowResultTextview.setVisibility(View.VISIBLE);
                     mComputerThrowResultTextview.setText(rpsGame.getComputerMoveDescription());
                     mComputerThrowResultContainer.setVisibility(View.VISIBLE);
-                    mComputerThrowImageview.setImageDrawable(getResources().getDrawable(rpsGame.getPlayerThrowImage()));
+                    mComputerThrowImageview.setImageDrawable(getResources().getDrawable(rpsGame.getComputerThrowImage()));
                 }
 
                 //display scores
@@ -123,6 +110,8 @@ public class PlayGameActivity extends AppCompatActivity {
                     mPlayerWinsTextview.setVisibility(View.VISIBLE);
                     mComputerWinsTextview.setVisibility(View.VISIBLE);
                 }
+
+                mStartRoundButton.setVisibility(View.VISIBLE);
             }
         }
     };
@@ -131,9 +120,6 @@ public class PlayGameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_game);
-
-        mComputerController = new ComputerController();
-        mGameController = new GameController();
 
         mRpsGamePresenter = new RpsGamePresenter(mOnGameStateChangedListener);
 
@@ -172,208 +158,82 @@ public class PlayGameActivity extends AppCompatActivity {
         mStartRoundButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mRpsGamePresenter.startNewRound();
-
-                //mCountdownTextview.setText(R.string.get_ready);
-                //setupRound(3);
+                mRpsGamePresenter.handleRoundCountdown(3);
             }
         });
 
         mRockThrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String computerMove = new ComputerController().computerMakesMove();
-                //new PlayerController().playerThowsForResult(PlayGameActivity.this, Constants.ROCK, computerMove, mCanPlayerMakeLegalMove);
-
-                mStartRoundButton.setVisibility(View.VISIBLE);
-                mComputerThrowImageview.setVisibility(View.VISIBLE);
-
-                mGameController.countdownHandler.removeCallbacksAndMessages(null);
+                mRpsGamePresenter.setPlayerThrow(RpsGamePresenter.ROCK_THROW_VALUE);
             }
         });
 
         mPaperThrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String computerMove = new ComputerController().computerMakesMove();
-                //new PlayerController().playerThowsForResult(PlayGameActivity.this, Constants.PAPER, computerMove, mCanPlayerMakeLegalMove);
-
-                mComputerThrowImageview.setVisibility(View.VISIBLE);
-                mStartRoundButton.setVisibility(View.VISIBLE);
-
-                mGameController.countdownHandler.removeCallbacksAndMessages(null);
+                mRpsGamePresenter.setPlayerThrow(RpsGamePresenter.PAPER_THROW_VALUE);
             }
         });
 
         mScissorsThrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String computerMove = new ComputerController().computerMakesMove();
-                //new PlayerController().playerThowsForResult(PlayGameActivity.this, Constants.SCISSORS, computerMove, mCanPlayerMakeLegalMove);
-
-                mComputerThrowImageview.setVisibility(View.VISIBLE);
-                mStartRoundButton.setVisibility(View.VISIBLE);
-
-                mGameController.countdownHandler.removeCallbacksAndMessages(null);
+                mRpsGamePresenter.setPlayerThrow(RpsGamePresenter.SCISSORS_THROW_VALUE);
             }
         });
     }
 
+    //pass values into presenter to recreate from save state
     public void initSaveState(Bundle savedInstanceState) {
-        mPlayerHasThrownThisRoundState = savedInstanceState.getBoolean(HAS_PLAYER_THROWN);
-        mIsSelectingThrowState = savedInstanceState.getBoolean(IS_SELECTING_THROW);
+        RpsGame rpsGame = new RpsGame();
 
-        mPlayerScoreState = savedInstanceState.getInt(PLAYER_SCORE);
-        mComputerScoreState = savedInstanceState.getInt(COMPUTER_SCORE);
+        rpsGame.setIsGamePhaseCountDown(savedInstanceState.getBoolean(IS_GAME_PHASE_COUNTDOWN_SAVE_STATE));
+        rpsGame.setIsGamePhaseRoundComplete(savedInstanceState.getBoolean(IS_GAME_PHASE_ROUND_COMPLETE_SAVE_STATE));
+        rpsGame.setHasPlayerWon(savedInstanceState.getBoolean(HAS_PLAYER_WON_SAVE_STATE));
+        rpsGame.setHasComputerWon(savedInstanceState.getBoolean(HAS_COMPUTER_WON_SAVE_STATE));
+        rpsGame.setCanPlayerMakeLegalMove(savedInstanceState.getBoolean(CAN_PLAYER_MAKE_LEGAL_MOVE_SAVE_STATE));
+        rpsGame.setHasPlayerThrownThisRound(savedInstanceState.getBoolean(HAS_PLAYER_THROWN_SAVE_STATE));
 
-        mPlayerScoreTextview.setText(String.valueOf(mPlayerScoreState));
-        mComputerScoreTextview.setText(String.valueOf(mComputerScoreState));
+        rpsGame.setPlayerScore(savedInstanceState.getInt(PLAYER_SCORE_SAVE_STATE));
+        rpsGame.setComputerScore(savedInstanceState.getInt(COMPUTER_SCORE_SAVE_STATE));
+        rpsGame.setCountDownSeconds(savedInstanceState.getInt(SECONDS_REMAINING_SAVE_STATE));
+        rpsGame.setPlayerThrowValue(savedInstanceState.getInt(PLAYER_THROW_VALUE_SAVE_STATE));
+        rpsGame.setComputerThrowValue(savedInstanceState.getInt(COMPUTER_THROW_VALUE_SAVE_STATE));
+        rpsGame.setPlayerThrowImage(savedInstanceState.getInt(PLAYER_THROW_IMAGE_SAVE_STATE));
+        rpsGame.setmComputerThrowImage(savedInstanceState.getInt(PLAYER_THROW_IMAGE_SAVE_STATE));
 
-        if (mPlayerHasThrownThisRoundState) {
-            setPlayerThrow(savedInstanceState.getString(PLAYER_THROW));
+        rpsGame.setCountDownDisplayValue(savedInstanceState.getString(COUNTDOWN_DESCRIPTION_VALUE_SAVE_STATE));
+        rpsGame.setPlayerMoveDescription(savedInstanceState.getString(PLAYER_THROW_DESCRIPTION_VALUE_SAVE_STATE));
+        rpsGame.setComputerMoveDescription(savedInstanceState.getString(COMPUTER_THROW_DESCRIPTION_VALUE_SAVE_STATE));
 
-            String computerThrow = savedInstanceState.getString(COMPUTER_THROW);
-            if (!TextUtils.isEmpty(computerThrow)) {
-                setComputerThrow(computerThrow);
-            }
-
-            mHasPlayerWon = savedInstanceState.getBoolean(HAS_COMPUTER_WON);
-            mHasComputerWon = savedInstanceState.getBoolean(HAS_COMPUTER_WON);
-
-            if (mHasPlayerWon) {
-                playerWins();
-            } else if (mHasComputerWon) {
-                computerWins();
-            } else {
-                roundIsDraw();
-            }
-        } else if (mIsSelectingThrowState) {
-            int secondsRemaining = savedInstanceState.getInt(SECONDS_REMAINING);
-            if (secondsRemaining > 0) {
-                mCountdownTextview.setText(String.valueOf(secondsRemaining));
-                setupRound(secondsRemaining - 1);
-            }
-        }
+        mRpsGamePresenter.restoreFromSaveState(rpsGame);
     }
 
-    public void setPlayerThrow(String move) {
-        int resource = getDrawableToShowFromThrow(move);
-        mPlayerThrowImageView.setImageResource(resource);
-        mPlayerThrowResultContainer.setVisibility(View.VISIBLE);
-        mPlayerThrowResultTextview.setText(move);
-
-        mPlayerThrowChoicesContainer.setVisibility(View.GONE);
-        mCountdownTextview.setVisibility(View.GONE);
-
-        mPlayerHasThrownThisRoundState = true;
-        mPlayerThrowChoiceState = move;
-        mIsSelectingThrowState = false;
-    }
-
-    public void setComputerThrow(String move) {
-        int resource = getDrawableToShowFromThrow(move);
-
-        mComputerThrowImageview.setImageResource(resource);
-        mComputerThrowResultContainer.setVisibility(View.VISIBLE);
-        mComputerThrowResultTextview.setText(move);
-        mComputerThrowChoiceState = move;
-    }
-
-    /**
-     * Method takes in a throw and returns a corresponding image to show
-     */
-    private int getDrawableToShowFromThrow(String move) {
-        switch (move) {
-            /*case Constants.ROCK:
-                return R.drawable.rock_image;
-            case Constants.PAPER:
-                return R.drawable.paper;
-            case Constants.SCISSORS:
-                return R.drawable.scissors;
-            case Constants.ILLEGAL_MOVE_NONE_THROWN:
-            case Constants.ILLEGAL_MOVE_TOO_EARLY:
-                return R.drawable.illegal_move;*/
-            default:
-                return 0;
-        }
-    }
-
+    //save everything in rpsGame obj on presenter to be restored
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putInt(PLAYER_SCORE, mPlayerScoreState);
-        outState.putInt(COMPUTER_SCORE, mComputerScoreState);
+        RpsGame rpsGame = mRpsGamePresenter.getGameState();
 
-        outState.putBoolean(HAS_PLAYER_THROWN, mPlayerHasThrownThisRoundState);
-        outState.putBoolean(IS_SELECTING_THROW, mIsSelectingThrowState);
+        outState.putBoolean(IS_GAME_PHASE_COUNTDOWN_SAVE_STATE, rpsGame.getIsGamePhaseCountDown());
+        outState.putBoolean(IS_GAME_PHASE_ROUND_COMPLETE_SAVE_STATE, rpsGame.getIsGamePhaseRoundComplete());
+        outState.putBoolean(HAS_PLAYER_WON_SAVE_STATE, rpsGame.getHasPlayerWon());
+        outState.putBoolean(HAS_COMPUTER_WON_SAVE_STATE, rpsGame.getHasComputerWon());
+        outState.putBoolean(CAN_PLAYER_MAKE_LEGAL_MOVE_SAVE_STATE, rpsGame.getCanPlayerMakeLegalMove());
+        outState.putBoolean(HAS_PLAYER_THROWN_SAVE_STATE, rpsGame.getHasPlayerHasThrownThisRound());
 
-        if (mPlayerHasThrownThisRoundState) {
-            outState.putString(PLAYER_THROW, mPlayerThrowChoiceState);
-            outState.putString(COMPUTER_THROW, mComputerThrowChoiceState);
-            outState.putBoolean(HAS_PLAYER_WON, mHasPlayerWon);
-            outState.putBoolean(HAS_COMPUTER_WON, mHasComputerWon);
-        }
+        outState.putInt(PLAYER_SCORE_SAVE_STATE, rpsGame.getPlayerScore());
+        outState.putInt(COMPUTER_SCORE_SAVE_STATE, rpsGame.getComputerScore());
+        outState.putInt(SECONDS_REMAINING_SAVE_STATE, rpsGame.getCountDownSeconds());
+        outState.putInt(PLAYER_THROW_VALUE_SAVE_STATE, rpsGame.getPlayerThrowValue());
+        outState.putInt(COMPUTER_THROW_VALUE_SAVE_STATE, rpsGame.getComputerThrowValue());
+        outState.putInt(PLAYER_THROW_IMAGE_SAVE_STATE, rpsGame.getPlayerThrowImage());
+        outState.putInt(COMPUTER_THROW_IMAGE_SAVE_STATE, rpsGame.getComputerThrowImage());
 
-        if (mIsSelectingThrowState) {
-            outState.putInt(SECONDS_REMAINING, mSeconds);
-        }
+        outState.putString(COUNTDOWN_DESCRIPTION_VALUE_SAVE_STATE, rpsGame.getCountDownDisplayValue());
+        outState.putString(PLAYER_THROW_DESCRIPTION_VALUE_SAVE_STATE, rpsGame.getPlayerMoveDescription());
+        outState.putString(COMPUTER_THROW_DESCRIPTION_VALUE_SAVE_STATE, rpsGame.getComputerMoveDescription());
 
         super.onSaveInstanceState(outState);
-    }
-
-    public void playerWins() {
-        int score = Integer.valueOf(mPlayerScoreTextview.getText().toString());
-        score++;
-        mPlayerScoreTextview.setText(String.valueOf(score));
-        mPlayerScoreState = score;
-
-        mHasPlayerWon = true;
-        mHasComputerWon = false;
-
-        mPlayerWinsTextview.setText(R.string.player_wins);
-        mPlayerWinsTextview.setVisibility(View.VISIBLE);
-    }
-
-    public void computerWins() {
-        int score = Integer.valueOf(mComputerScoreTextview.getText().toString());
-        score++;
-
-        mHasPlayerWon = false;
-        mHasComputerWon = false;
-
-        mComputerWinsTextview.setText(R.string.computer_wins);
-        mComputerScoreTextview.setText(String.valueOf(score));
-        mComputerScoreState = score;
-        mComputerWinsTextview.setVisibility(View.VISIBLE);
-        mStartRoundButton.setVisibility(View.VISIBLE);
-    }
-
-    public void roundIsDraw() {
-        mPlayerWinsTextview.setText(R.string.draw_result);
-        mComputerWinsTextview.setText(R.string.draw_result);
-
-        mPlayerWinsTextview.setVisibility(View.VISIBLE);
-        mComputerWinsTextview.setVisibility(View.VISIBLE);
-    }
-
-    public void updateCountdownTimer(String updateText, int seconds) {
-        mCountdownTextview.setText(updateText);
-        mSeconds = seconds;
-    }
-
-    private void setupRound(int seconds) {
-        mStartRoundButton.setVisibility(View.GONE);
-        mPlayerThrowChoicesContainer.setVisibility(View.VISIBLE);
-        mCountdownTextview.setVisibility(View.VISIBLE);
-
-        mComputerWinsTextview.setVisibility(View.GONE);
-        mPlayerWinsTextview.setVisibility(View.GONE);
-        mComputerThrowResultContainer.setVisibility(View.GONE);
-        mPlayerThrowResultContainer.setVisibility(View.GONE);
-
-        mGameController.startCountdownTimer(PlayGameActivity.this, seconds);
-
-        mPlayerHasThrownThisRoundState = false;
-        mIsSelectingThrowState = true;
-        mPlayerThrowChoiceState = null;
     }
 }

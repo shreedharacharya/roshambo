@@ -110,7 +110,7 @@ public class RpsGame {
         return mCountDownSeconds;
     }
 
-    public void setmPlayerThrowImage(int playerThrowImage) {
+    public void setPlayerThrowImage(int playerThrowImage) {
         this.mPlayerThrowImage = playerThrowImage;
     }
 

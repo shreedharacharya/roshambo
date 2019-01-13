@@ -5,6 +5,8 @@ import android.os.Handler;
 import com.timkaragosian.roshambo.Model.RpsGame;
 import com.timkaragosian.roshambo.R;
 
+import java.util.Random;
+
 public class RpsGamePresenter {
     private static final String GET_READY_MGS = "GET READY!";
     private static final String THROW_NOW_MSG = "THROW NOW!";
@@ -22,36 +24,144 @@ public class RpsGamePresenter {
     public final static String ILLEGAL_MOVE_NONE_THROWN_DISPLAY_DESCRIPTION = "Illegal Move! No Move Thrown!";
     public final static String ILLEGAL_MOVE_TOO_EARLY_DISPLAY_DESCRIPTION = "Illegal Move! Thrown Too Early!";
 
-    private static final int ROCK_THROW_IMAGE_RESOURCE = R.drawable.rock_image;
-    private static final int PAPER_THROW_IMAGE_RESOURCE = R.drawable.paper;
-    private static final int SCISSORS_THROW_IMAGE_RESOURCE = R.drawable.scissors;
-    private static final int ILLEGAL_THROW_IMAGE_RESOURCE = R.drawable.illegal_move;
+    private static final int ROCK_THROW_IMAGE_RESOURCE_ID = R.drawable.rock_image;
+    private static final int PAPER_THROW_IMAGE_RESOURCE_ID = R.drawable.paper;
+    private static final int SCISSORS_THROW_IMAGE_RESOURCE_ID = R.drawable.scissors;
+    private static final int ILLEGAL_THROW_IMAGE_RESOURCE_ID = R.drawable.illegal_move;
 
     RpsGame mRpsGame = new RpsGame();
     OnGameStateChangedListener mOnGameStateChangedListener;
 
     private final Handler countdownHandler = new Handler();
+    private final Handler throwNowHandler = new Handler();
 
     public RpsGamePresenter(OnGameStateChangedListener listener) {
         this.setOnGameStateChangedListener(listener);
     }
 
-    public void startNewRound() {
+    //sets object from save state and updates view
+    public void restoreFromSaveState(RpsGame rpsGame) {
+        this.mRpsGame = rpsGame;
+        notifyObservers();
+    }
+
+    public RpsGame getGameState() {
+        return mRpsGame;
+    }
+
+    //prepares the game on the start of a new round and starts timer
+    public void handleRoundCountdown(int seconds) {
         //start timer
         mRpsGame.setCountDownDisplayValue(GET_READY_MGS);
         mRpsGame.setPlayerThrowValue(EMPTY_THROW_VALUE);
         mRpsGame.setComputerThrowValue(EMPTY_THROW_VALUE);
         mRpsGame.setIsGamePhaseCountDown(true);
-        notifyObservers();
+        mRpsGame.setHasPlayerThrownThisRound(false);
+        mRpsGame.setCountDownSeconds(seconds);
+        mRpsGame.setCanPlayerMakeLegalMove(false);
 
-        startCountdownHandler(3);
+        notifyObservers();
     }
 
+    //sets the player throw, descriptions, gets computer move, and determines winner before updating the view
     public void setPlayerThrow(int throwValue) {
+        if (!mRpsGame.getCanPlayerMakeLegalMove()) {
+            throwValue = ILLEGAL_THROW_TOO_EARLY_VALUE;
+        } else {
+            computerThrowsMove();
+        }
+
+        countdownHandler.removeCallbacksAndMessages(null);
+
+        mRpsGame.setPlayerThrowImage(getImageResourceIdFromThrowValue(throwValue));
+        mRpsGame.setPlayerMoveDescription(getThrowDisplayDescriptionFromThrowValue(throwValue));
         mRpsGame.setPlayerThrowValue(throwValue);
+
+        mRpsGame.setHasPlayerThrownThisRound(true);
+        mRpsGame.setIsGamePhaseRoundComplete(true);
+        mRpsGame.setIsGamePhaseCountDown(false);
+        mRpsGame.setCanPlayerMakeLegalMove(false);
+
+        determineWinner();
+
         notifyObservers();
     }
 
+    //compares throw values and determines winner of round
+    private void determineWinner() {
+        if (mRpsGame.getPlayerThrowValue() == mRpsGame.getComputerThrowValue()) {
+            mRpsGame.setHasPlayerWon(false);
+            mRpsGame.setHasComputerWon(false);
+        } else if ((mRpsGame.getPlayerThrowValue() == ROCK_THROW_VALUE && mRpsGame.getComputerThrowValue() == SCISSORS_THROW_VALUE) ||
+                (mRpsGame.getPlayerThrowValue() == PAPER_THROW_VALUE && mRpsGame.getComputerThrowValue() == ROCK_THROW_VALUE) ||
+                (mRpsGame.getPlayerThrowValue() == SCISSORS_THROW_VALUE && mRpsGame.getComputerThrowValue() == SCISSORS_THROW_VALUE)) {
+            mRpsGame.setHasPlayerWon(true);
+            mRpsGame.setHasComputerWon(false);
+            mRpsGame.setPlayerScore(mRpsGame.getPlayerScore() + 1);
+        } else {
+            mRpsGame.setHasPlayerWon(false);
+            mRpsGame.setHasComputerWon(true);
+            mRpsGame.setComputerScore(mRpsGame.getComputerScore() + 1);
+        }
+    }
+
+    //determines what move computer will make and sets to object
+    private void computerThrowsMove() {
+        Random random = new Random();
+        int selection = random.nextInt(3);
+
+        switch (selection) {
+            case 0:
+                mRpsGame.setComputerThrowValue(ROCK_THROW_VALUE);
+                break;
+            case 1:
+                mRpsGame.setComputerThrowValue(PAPER_THROW_VALUE);
+                break;
+            case 2:
+                mRpsGame.setComputerThrowValue(SCISSORS_THROW_VALUE);
+                break;
+            default:
+                mRpsGame.setComputerThrowValue(ROCK_THROW_VALUE);
+        }
+
+        mRpsGame.setmComputerThrowImage(getImageResourceIdFromThrowValue(mRpsGame.getComputerThrowValue()));
+        mRpsGame.setComputerMoveDescription(getThrowDisplayDescriptionFromThrowValue(mRpsGame.getComputerThrowValue()));
+    }
+
+    //determines what image resource id to use from throw value
+    private int getImageResourceIdFromThrowValue(int throwValue) {
+        switch (throwValue) {
+            case ROCK_THROW_VALUE:
+                return ROCK_THROW_IMAGE_RESOURCE_ID;
+            case PAPER_THROW_VALUE:
+                return PAPER_THROW_IMAGE_RESOURCE_ID;
+            case SCISSORS_THROW_VALUE:
+                return SCISSORS_THROW_IMAGE_RESOURCE_ID;
+            case ILLEGAL_THROW_TOO_EARLY_VALUE:
+            case ILLEGAL_THROW_TOO_LATE_VALUE:
+            default:
+                return ILLEGAL_THROW_IMAGE_RESOURCE_ID;
+        }
+    }
+
+    //determines what string description to show from throw value
+    private String getThrowDisplayDescriptionFromThrowValue(int throwValue) {
+        switch (throwValue) {
+            case ROCK_THROW_VALUE:
+                return ROCK_THROW_DISPLAY_DESCRIPTION;
+            case PAPER_THROW_VALUE:
+                return PAPER_THROW_DISPLAY_DESCRIPTION;
+            case SCISSORS_THROW_VALUE:
+                return SCISSORS_THROW_DISPLAY_DESCRIPTION;
+            case ILLEGAL_THROW_TOO_EARLY_VALUE:
+                return ILLEGAL_MOVE_TOO_EARLY_DISPLAY_DESCRIPTION;
+            case ILLEGAL_THROW_TOO_LATE_VALUE:
+            default:
+                return ILLEGAL_MOVE_NONE_THROWN_DISPLAY_DESCRIPTION;
+        }
+    }
+
+    //way of updating view as long as listener is set
     private void notifyObservers() {
         if (this.mOnGameStateChangedListener != null) {
             mOnGameStateChangedListener.onGameStateChanged(mRpsGame);
@@ -62,25 +172,25 @@ public class RpsGamePresenter {
         this.mOnGameStateChangedListener = l;
     }
 
+    //setup interface to handle when game state changes
     public interface OnGameStateChangedListener {
         void onGameStateChanged(RpsGame rpsGame);
     }
 
     //Starts timer to display a countdown
     public void startCountdownHandler(final int seconds) {
+        mRpsGame.setCountDownSeconds(seconds);
         mRpsGame.setIsGamePhaseRoundComplete(false);
         mRpsGame.setHasPlayerWon(false);
         mRpsGame.setHasComputerWon(false);
-        mRpsGame.setCanPlayerMakeLegalMove(false);
 
         countdownHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                mRpsGame.setCountDownSeconds(seconds);
                 mRpsGame.setCountDownDisplayValue(String.valueOf(seconds));
 
                 if (seconds > 0) {
-                    startCountdownHandler(seconds - 1);
+                    mRpsGame.setCountDownSeconds(seconds - 1);
                 } else {
                     startThrowNowHandler();
                 }
@@ -93,12 +203,12 @@ public class RpsGamePresenter {
     //Sets up game to enable user to throw a move for one second and delivers message
     // if no throw is chosen during this time, the player loses with an illegal move of throwing too late
     public void startThrowNowHandler() {
+        countdownHandler.removeCallbacksAndMessages(null);
         mRpsGame.setCanPlayerMakeLegalMove(true);
         mRpsGame.setCountDownDisplayValue(THROW_NOW_MSG);
         notifyObservers();
 
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
+        throwNowHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 if (!mRpsGame.getHasPlayerHasThrownThisRound()) {
@@ -109,12 +219,10 @@ public class RpsGamePresenter {
                     mRpsGame.setIsGamePhaseCountDown(false);
                     mRpsGame.setCanPlayerMakeLegalMove(false);
                     mRpsGame.setmComputerThrowImage(0);
-                    mRpsGame.setmPlayerThrowImage(ILLEGAL_THROW_IMAGE_RESOURCE);
+                    mRpsGame.setPlayerThrowImage(ILLEGAL_THROW_IMAGE_RESOURCE_ID);
                     mRpsGame.setPlayerMoveDescription(ILLEGAL_MOVE_NONE_THROWN_DISPLAY_DESCRIPTION);
                     mRpsGame.setPlayerThrowValue(4); //set to whatever needs to be illegal move thrown too late
                 }
-
-                mRpsGame.setCanPlayerMakeLegalMove(false);
                 notifyObservers();
             }
         }, 1000);
