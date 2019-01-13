@@ -32,7 +32,7 @@ public class PlayGameActivity extends AppCompatActivity {
     private static final String PLAYER_THROW_VALUE_SAVE_STATE = "playerThrow";
     private static final String COMPUTER_THROW_VALUE_SAVE_STATE = "computerThrow";
     private static final String COMPUTER_THROW_IMAGE_SAVE_STATE = "computerThrowImage";
-    private static final String PLAYER_THROW_IMAGE_SAVE_STATE = "computerThrowImage";
+    private static final String PLAYER_THROW_IMAGE_SAVE_STATE = "playerThrowImage";
     private static final String COUNTDOWN_DESCRIPTION_VALUE_SAVE_STATE = "countdownDescription";
     private static final String PLAYER_THROW_DESCRIPTION_VALUE_SAVE_STATE = "playerThrowDescription";
     private static final String COMPUTER_THROW_DESCRIPTION_VALUE_SAVE_STATE = "computerThrowDescription";
