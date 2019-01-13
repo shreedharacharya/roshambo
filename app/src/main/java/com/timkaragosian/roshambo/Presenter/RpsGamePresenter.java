@@ -29,7 +29,7 @@ public class RpsGamePresenter {
     public final static String PAPER_THROW_DISPLAY_DESCRIPTION = "Paper";
     public final static String SCISSORS_THROW_DISPLAY_DESCRIPTION = "Scissors";
     public final static String ILLEGAL_MOVE_NONE_THROWN_DISPLAY_DESCRIPTION = "Illegal Move! No Move Thrown!";
-    public final static String ILLEGAL_MOVE_TOO_EARLY_DISPLAY_DESCRIPTION = "Illegal Move! Thrown Too Early!";
+    public final static String ILLEGAL_MOVE_THROW_TOO_EARLY_DISPLAY_DESCRIPTION = "Illegal Move! Thrown Too Early!";
 
     private static final int ROCK_THROW_IMAGE_RESOURCE_ID = R.drawable.rock_image;
     private static final int PAPER_THROW_IMAGE_RESOURCE_ID = R.drawable.paper;
@@ -98,7 +98,7 @@ public class RpsGamePresenter {
     }
 
     //compares throw values and determines winner of round
-    private void determineWinner() {
+    public void determineWinner() {
         if (mRpsGame.getPlayerThrowValue() == mRpsGame.getComputerThrowValue()) {
             mRpsGame.setHasPlayerWon(false);
             mRpsGame.setHasComputerWon(false);
@@ -164,7 +164,7 @@ public class RpsGamePresenter {
             case SCISSORS_THROW_VALUE:
                 return SCISSORS_THROW_DISPLAY_DESCRIPTION;
             case ILLEGAL_THROW_TOO_EARLY_VALUE:
-                return ILLEGAL_MOVE_TOO_EARLY_DISPLAY_DESCRIPTION;
+                return ILLEGAL_MOVE_THROW_TOO_EARLY_DISPLAY_DESCRIPTION;
             case ILLEGAL_THROW_TOO_LATE_VALUE:
             default:
                 return ILLEGAL_MOVE_NONE_THROWN_DISPLAY_DESCRIPTION;

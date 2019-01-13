@@ -225,11 +225,191 @@ public class RpsGamePresenterUnitTests {
 
         mRpsGame = mRpsGamePresenter.getGameState();
 
-        assertTrue(mRpsGame.getHasComputerWon());
         assertFalse(mRpsGame.getHasPlayerWon());
+        assertTrue(mRpsGame.getHasComputerWon());
 
         assertEquals(0, mRpsGame.getPlayerScore());
         assertEquals(1, mRpsGame.getComputerScore());
+    }
+
+    @Test
+    public void determineWinnerPlayerRockComputerPaper() {
+        mRpsGame.setComputerThrowValue(2);
+        mRpsGame.setPlayerThrowValue(1);
+        mRpsGame.setCanPlayerMakeLegalMove(true);
+        mRpsGame.setComputerScore(0);
+        mRpsGame.setPlayerScore(0);
+
+        mRpsGamePresenter.setGameState(mRpsGame);
+        mRpsGamePresenter.determineWinner();
+
+        mRpsGame = mRpsGamePresenter.getGameState();
+
+        assertFalse(mRpsGame.getHasPlayerWon());
+        assertTrue(mRpsGame.getHasComputerWon());
+
+        assertEquals(0, mRpsGame.getPlayerScore());
+        assertEquals(1, mRpsGame.getComputerScore());
+    }
+
+    @Test
+    public void determineWinnerPlayerRockComputerRock() {
+        mRpsGame.setComputerThrowValue(1);
+        mRpsGame.setPlayerThrowValue(1);
+        mRpsGame.setCanPlayerMakeLegalMove(true);
+        mRpsGame.setComputerScore(0);
+        mRpsGame.setPlayerScore(0);
+
+        mRpsGamePresenter.setGameState(mRpsGame);
+        mRpsGamePresenter.determineWinner();
+
+        mRpsGame = mRpsGamePresenter.getGameState();
+
+        assertFalse(mRpsGame.getHasPlayerWon());
+        assertFalse(mRpsGame.getHasComputerWon());
+
+        assertEquals(0, mRpsGame.getPlayerScore());
+        assertEquals(0, mRpsGame.getComputerScore());
+    }
+
+    @Test
+    public void determineWinnerPlayerRockComputerScissors() {
+        mRpsGame.setComputerThrowValue(3);
+        mRpsGame.setPlayerThrowValue(1);
+        mRpsGame.setCanPlayerMakeLegalMove(true);
+        mRpsGame.setComputerScore(0);
+        mRpsGame.setPlayerScore(0);
+
+        mRpsGamePresenter.setGameState(mRpsGame);
+        mRpsGamePresenter.determineWinner();
+
+        mRpsGame = mRpsGamePresenter.getGameState();
+
+        assertTrue(mRpsGame.getHasPlayerWon());
+        assertFalse(mRpsGame.getHasComputerWon());
+
+        assertEquals(1, mRpsGame.getPlayerScore());
+        assertEquals(0, mRpsGame.getComputerScore());
+    }
+
+    @Test
+    public void determineWinnerPlayerPaperComputerRock() {
+        mRpsGame.setComputerThrowValue(1);
+        mRpsGame.setPlayerThrowValue(2);
+        mRpsGame.setCanPlayerMakeLegalMove(true);
+        mRpsGame.setComputerScore(0);
+        mRpsGame.setPlayerScore(0);
+
+        mRpsGamePresenter.setGameState(mRpsGame);
+        mRpsGamePresenter.determineWinner();
+
+        mRpsGame = mRpsGamePresenter.getGameState();
+
+        assertTrue(mRpsGame.getHasPlayerWon());
+        assertFalse(mRpsGame.getHasComputerWon());
+
+        assertEquals(1, mRpsGame.getPlayerScore());
+        assertEquals(0, mRpsGame.getComputerScore());
+    }
+
+    @Test
+    public void determineWinnerPlayerPaperComputerPaper() {
+        mRpsGame.setComputerThrowValue(2);
+        mRpsGame.setPlayerThrowValue(2);
+        mRpsGame.setCanPlayerMakeLegalMove(true);
+        mRpsGame.setComputerScore(0);
+        mRpsGame.setPlayerScore(0);
+
+        mRpsGamePresenter.setGameState(mRpsGame);
+        mRpsGamePresenter.determineWinner();
+
+        mRpsGame = mRpsGamePresenter.getGameState();
+
+        assertFalse(mRpsGame.getHasPlayerWon());
+        assertFalse(mRpsGame.getHasComputerWon());
+
+        assertEquals(0, mRpsGame.getPlayerScore());
+        assertEquals(0, mRpsGame.getComputerScore());
+    }
+
+    @Test
+    public void determineWinnerPlayerPaperComputerScissors() {
+        mRpsGame.setComputerThrowValue(3);
+        mRpsGame.setPlayerThrowValue(2);
+        mRpsGame.setCanPlayerMakeLegalMove(true);
+        mRpsGame.setComputerScore(0);
+        mRpsGame.setPlayerScore(0);
+
+        mRpsGamePresenter.setGameState(mRpsGame);
+        mRpsGamePresenter.determineWinner();
+
+        mRpsGame = mRpsGamePresenter.getGameState();
+
+        assertFalse(mRpsGame.getHasPlayerWon());
+        assertTrue(mRpsGame.getHasComputerWon());
+
+        assertEquals(0, mRpsGame.getPlayerScore());
+        assertEquals(1, mRpsGame.getComputerScore());
+    }
+
+    @Test
+    public void determineWinnerPlayerScissorsComputerRock() {
+        mRpsGame.setComputerThrowValue(1);
+        mRpsGame.setPlayerThrowValue(3);
+        mRpsGame.setCanPlayerMakeLegalMove(true);
+        mRpsGame.setComputerScore(0);
+        mRpsGame.setPlayerScore(0);
+
+        mRpsGamePresenter.setGameState(mRpsGame);
+        mRpsGamePresenter.determineWinner();
+
+        mRpsGame = mRpsGamePresenter.getGameState();
+
+        assertFalse(mRpsGame.getHasPlayerWon());
+        assertTrue(mRpsGame.getHasComputerWon());
+
+        assertEquals(0, mRpsGame.getPlayerScore());
+        assertEquals(1, mRpsGame.getComputerScore());
+    }
+
+    @Test
+    public void determineWinnerPlayerScissorsComputerPaper() {
+        mRpsGame.setComputerThrowValue(2);
+        mRpsGame.setPlayerThrowValue(3);
+        mRpsGame.setCanPlayerMakeLegalMove(true);
+        mRpsGame.setComputerScore(0);
+        mRpsGame.setPlayerScore(0);
+
+        mRpsGamePresenter.setGameState(mRpsGame);
+        mRpsGamePresenter.determineWinner();
+
+        mRpsGame = mRpsGamePresenter.getGameState();
+
+        assertTrue(mRpsGame.getHasPlayerWon());
+        assertFalse(mRpsGame.getHasComputerWon());
+
+        assertEquals(1, mRpsGame.getPlayerScore());
+        assertEquals(0, mRpsGame.getComputerScore());
+    }
+
+    @Test
+    public void determineWinnerPlayerScissorsComputerScissors() {
+        mRpsGame.setComputerThrowValue(3);
+        mRpsGame.setPlayerThrowValue(3);
+        mRpsGame.setCanPlayerMakeLegalMove(true);
+        mRpsGame.setComputerScore(0);
+        mRpsGame.setPlayerScore(0);
+
+        mRpsGamePresenter.setGameState(mRpsGame);
+        mRpsGamePresenter.determineWinner();
+
+        mRpsGame = mRpsGamePresenter.getGameState();
+
+        assertFalse(mRpsGame.getHasPlayerWon());
+        assertFalse(mRpsGame.getHasComputerWon());
+
+        assertEquals(0, mRpsGame.getPlayerScore());
+        assertEquals(0, mRpsGame.getComputerScore());
     }
 
     @Test
@@ -284,4 +464,6 @@ public class RpsGamePresenterUnitTests {
         assertEquals("Illegal Move! No Move Thrown!", mRpsGame.getPlayerMoveDescription());
         assertEquals(4, mRpsGame.getPlayerThrowValue());
     }
+
+
 }

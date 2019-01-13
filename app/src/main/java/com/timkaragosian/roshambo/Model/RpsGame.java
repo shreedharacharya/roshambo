@@ -5,13 +5,13 @@ package com.timkaragosian.roshambo.Model;
  */
 public class RpsGame {
     private boolean mIsGamePhaseCountDown;
+    private boolean mIsCountdownRunning;
     private boolean mIsGamePhaseRoundComplete;
 
     private boolean mHasPlayerWon;
     private boolean mHasComputerWon;
     private boolean mCanPlayerMakeLegalMove;
     private boolean mHasPlayerThrownThisRound;
-    private boolean mIsCountdownRunning;
 
     private int mPlayerScore;
     private int mComputerScore;
@@ -23,8 +23,8 @@ public class RpsGame {
     private int mComputerThrowImage;
 
     private String mCountDownDisplayValue;
-    private String mPlayerMoveDescription;
-    private String mComputerMoveDescription;
+    private String mPlayerThrowMoveDescription;
+    private String mComputerThrowMoveDescription;
 
     public void setIsGamePhaseCountDown(boolean isGamePhaseCountDown) {
         this.mIsGamePhaseCountDown = isGamePhaseCountDown;
@@ -139,19 +139,19 @@ public class RpsGame {
     }
 
     public void setPlayerMoveDescription(String playerMoveDescription) {
-        this.mPlayerMoveDescription = playerMoveDescription;
+        this.mPlayerThrowMoveDescription = playerMoveDescription;
     }
 
     public String getPlayerMoveDescription() {
-        return mPlayerMoveDescription;
+        return mPlayerThrowMoveDescription;
     }
 
     public void setComputerMoveDescription(String computerMoveDescription) {
-        this.mComputerMoveDescription = computerMoveDescription;
+        this.mComputerThrowMoveDescription = computerMoveDescription;
     }
 
     public String getComputerMoveDescription() {
-        return mComputerMoveDescription;
+        return mComputerThrowMoveDescription;
     }
 
     public void setIsCountdownRunning(boolean isCountdownRunning) {
