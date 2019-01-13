@@ -15,7 +15,7 @@ import com.timkaragosian.roshambo.R;
 
 /**
  * Activity that handles all the views for the game
- *
+ * <p>
  * Presentation layer feeds this a state and the game state will be shown
  */
 public class PlayGameActivity extends AppCompatActivity {
@@ -74,9 +74,11 @@ public class PlayGameActivity extends AppCompatActivity {
                 mComputerThrowResultContainer.setVisibility(View.GONE);
                 mPlayerThrowResultContainer.setVisibility(View.GONE);
 
-                mRpsGamePresenter.startCountdownHandler(rpsGame.getCountDownSeconds());
-
                 mCountdownTextview.setText(rpsGame.getCountDownDisplayValue());
+
+                if (!rpsGame.getIsCountdownRunning()) {
+                    mRpsGamePresenter.startCountdownHandler(rpsGame.getCountDownSeconds());
+                }
             } else if (rpsGame.getIsGamePhaseRoundComplete()) {
                 //setup basic view visibility
                 mPlayerThrowChoicesContainer.setVisibility(View.GONE);
@@ -206,7 +208,7 @@ public class PlayGameActivity extends AppCompatActivity {
         rpsGame.setPlayerThrowValue(savedInstanceState.getInt(PLAYER_THROW_VALUE_SAVE_STATE));
         rpsGame.setComputerThrowValue(savedInstanceState.getInt(COMPUTER_THROW_VALUE_SAVE_STATE));
         rpsGame.setPlayerThrowImage(savedInstanceState.getInt(PLAYER_THROW_IMAGE_SAVE_STATE));
-        rpsGame.setmComputerThrowImage(savedInstanceState.getInt(PLAYER_THROW_IMAGE_SAVE_STATE));
+        rpsGame.setComputerThrowImage(savedInstanceState.getInt(COMPUTER_THROW_IMAGE_SAVE_STATE));
 
         rpsGame.setCountDownDisplayValue(savedInstanceState.getString(COUNTDOWN_DESCRIPTION_VALUE_SAVE_STATE));
         rpsGame.setPlayerMoveDescription(savedInstanceState.getString(PLAYER_THROW_DESCRIPTION_VALUE_SAVE_STATE));

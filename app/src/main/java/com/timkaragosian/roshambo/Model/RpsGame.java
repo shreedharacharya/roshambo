@@ -11,6 +11,7 @@ public class RpsGame {
     private boolean mHasComputerWon;
     private boolean mCanPlayerMakeLegalMove;
     private boolean mHasPlayerThrownThisRound;
+    private boolean mIsCountdownRunning;
 
     private int mPlayerScore;
     private int mComputerScore;
@@ -121,7 +122,7 @@ public class RpsGame {
         return mPlayerThrowImage;
     }
 
-    public void setmComputerThrowImage(int computerThrowImage) {
+    public void setComputerThrowImage(int computerThrowImage) {
         this.mComputerThrowImage = computerThrowImage;
     }
 
@@ -151,5 +152,13 @@ public class RpsGame {
 
     public String getComputerMoveDescription() {
         return mComputerMoveDescription;
+    }
+
+    public void setIsCountdownRunning(boolean isCountdownRunning) {
+        this.mIsCountdownRunning = isCountdownRunning;
+    }
+
+    public boolean getIsCountdownRunning() {
+        return mIsCountdownRunning;
     }
 }

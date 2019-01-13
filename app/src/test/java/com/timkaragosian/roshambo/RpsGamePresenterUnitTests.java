@@ -11,6 +11,7 @@ import org.mockito.Matchers;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -39,6 +40,9 @@ public class RpsGamePresenterUnitTests {
 
     @Test
     public void handleRoundCountdownTest() {
+        mRpsGamePresenter = spy(mRpsGamePresenter);
+        doNothing().when(mRpsGamePresenter).startCountdownHandler(anyInt());
+
         mRpsGamePresenter.handleRoundCountdown(3);
         mRpsGame = mRpsGamePresenter.getGameState();
 
@@ -126,6 +130,7 @@ public class RpsGamePresenterUnitTests {
         assertTrue(mRpsGame.getIsGamePhaseRoundComplete());
         assertFalse(mRpsGame.getIsGamePhaseCountDown());
         assertFalse(mRpsGame.getCanPlayerMakeLegalMove());
+        assertFalse(mRpsGame.getIsCountdownRunning());
     }
 
     @Test
@@ -151,6 +156,7 @@ public class RpsGamePresenterUnitTests {
         assertTrue(mRpsGame.getIsGamePhaseRoundComplete());
         assertFalse(mRpsGame.getIsGamePhaseCountDown());
         assertFalse(mRpsGame.getCanPlayerMakeLegalMove());
+        assertFalse(mRpsGame.getIsCountdownRunning());
     }
 
     @Test
@@ -170,6 +176,7 @@ public class RpsGamePresenterUnitTests {
 
         assertTrue(mRpsGame.getHasComputerWon());
         assertFalse(mRpsGame.getHasPlayerWon());
+        assertFalse(mRpsGame.getIsCountdownRunning());
 
         assertEquals(0, mRpsGame.getPlayerScore());
         assertEquals(1, mRpsGame.getComputerScore());
@@ -244,6 +251,7 @@ public class RpsGamePresenterUnitTests {
         assertFalse(mRpsGame.getIsGamePhaseRoundComplete());
         assertFalse(mRpsGame.getHasPlayerWon());
         assertFalse(mRpsGame.getHasComputerWon());
+        assertTrue(mRpsGame.getIsCountdownRunning());
     }
 
     @Test
@@ -264,6 +272,7 @@ public class RpsGamePresenterUnitTests {
         mRpsGamePresenter.playerIllegalMoveTooLate();
         mRpsGame = mRpsGamePresenter.getGameState();
 
+        assertFalse(mRpsGame.getIsCountdownRunning());
         assertTrue(mRpsGame.getHasComputerWon());
         assertFalse(mRpsGame.getHasPlayerWon());
         assertEquals(1, mRpsGame.getComputerScore());

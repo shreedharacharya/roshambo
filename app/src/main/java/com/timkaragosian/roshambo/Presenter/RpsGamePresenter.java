@@ -67,6 +67,8 @@ public class RpsGamePresenter {
         mRpsGame.setCountDownSeconds(seconds);
         mRpsGame.setCanPlayerMakeLegalMove(false);
 
+        startCountdownHandler(seconds);
+
         notifyObservers();
     }
 
@@ -87,6 +89,7 @@ public class RpsGamePresenter {
         mRpsGame.setHasPlayerThrownThisRound(true);
         mRpsGame.setIsGamePhaseRoundComplete(true);
         mRpsGame.setIsGamePhaseCountDown(false);
+        mRpsGame.setIsCountdownRunning(false);
         mRpsGame.setCanPlayerMakeLegalMove(false);
 
         determineWinner();
@@ -131,7 +134,7 @@ public class RpsGamePresenter {
                 mRpsGame.setComputerThrowValue(ROCK_THROW_VALUE);
         }
 
-        mRpsGame.setmComputerThrowImage(getImageResourceIdFromThrowValue(mRpsGame.getComputerThrowValue()));
+        mRpsGame.setComputerThrowImage(getImageResourceIdFromThrowValue(mRpsGame.getComputerThrowValue()));
         mRpsGame.setComputerMoveDescription(getThrowDisplayDescriptionFromThrowValue(mRpsGame.getComputerThrowValue()));
     }
 
@@ -195,6 +198,7 @@ public class RpsGamePresenter {
 
                 if (seconds > 0) {
                     mRpsGame.setCountDownSeconds(seconds - 1);
+                    startCountdownHandler(mRpsGame.getCountDownSeconds());
                 } else {
                     startThrowNowHandler();
                 }
@@ -205,6 +209,7 @@ public class RpsGamePresenter {
     }
 
     public void setupCountdownHandler(int seconds) {
+        mRpsGame.setIsCountdownRunning(true);
         mRpsGame.setCountDownSeconds(seconds);
         mRpsGame.setIsGamePhaseRoundComplete(false);
         mRpsGame.setHasPlayerWon(false);
@@ -219,9 +224,11 @@ public class RpsGamePresenter {
         mThrowNowHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
+
                 if (!mRpsGame.getHasPlayerHasThrownThisRound()) {
                     playerIllegalMoveTooLate();
                 }
+
                 notifyObservers();
             }
         }, 1000);
@@ -235,13 +242,14 @@ public class RpsGamePresenter {
     }
 
     public void playerIllegalMoveTooLate() {
+        mRpsGame.setIsCountdownRunning(false);
         mRpsGame.setHasComputerWon(true);
         mRpsGame.setHasPlayerWon(false);
         mRpsGame.setComputerScore(mRpsGame.getComputerScore() + 1);
         mRpsGame.setIsGamePhaseRoundComplete(true);
         mRpsGame.setIsGamePhaseCountDown(false);
         mRpsGame.setCanPlayerMakeLegalMove(false);
-        mRpsGame.setmComputerThrowImage(0);
+        mRpsGame.setComputerThrowImage(0);
         mRpsGame.setPlayerThrowImage(ILLEGAL_THROW_IMAGE_RESOURCE_ID);
         mRpsGame.setPlayerMoveDescription(ILLEGAL_MOVE_NONE_THROWN_DISPLAY_DESCRIPTION);
         mRpsGame.setPlayerThrowValue(4);
