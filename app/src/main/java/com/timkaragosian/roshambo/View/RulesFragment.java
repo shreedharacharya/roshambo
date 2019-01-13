@@ -1,4 +1,4 @@
-package com.timkaragosian.roshambo;
+package com.timkaragosian.roshambo.View;
 
 
 import android.content.Intent;
@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.timkaragosian.roshambo.R;
 
 
 /**

@@ -1,6 +1,7 @@
-package com.timkaragosian.roshambo;
+package com.timkaragosian.roshambo.Controller;
 
-import java.util.ArrayList;
+import com.timkaragosian.roshambo.Model.Constants;
+import com.timkaragosian.roshambo.View.PlayGameActivity;
 
 public class PlayerController {
     //takes in user input handles accordingly

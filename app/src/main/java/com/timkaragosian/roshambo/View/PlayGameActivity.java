@@ -1,4 +1,4 @@
-package com.timkaragosian.roshambo;
+package com.timkaragosian.roshambo.View;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,7 +10,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class PlayGameActivity extends AppCompatActivity {
+import com.timkaragosian.roshambo.Model.Constants;
+import com.timkaragosian.roshambo.Controller.ComputerController;
+import com.timkaragosian.roshambo.Controller.GameController;
+import com.timkaragosian.roshambo.Controller.PlayerController;
+import com.timkaragosian.roshambo.Model.RpsGame;
+import com.timkaragosian.roshambo.R;
+
+public class PlayGameActivity extends AppCompatActivity implements RpsGame.OnGameStateChangedListener {
 
     private static final String SECONDS_REMAINING = "secondsRemaining";
     private static final String HAS_PLAYER_THROWN = "hasPlayerThrown";
@@ -46,6 +53,8 @@ public class PlayGameActivity extends AppCompatActivity {
     String mComputerThrowChoiceState;
     String mPlayerThrowChoiceState;
 
+    RpsGame mRpsGame;
+
     boolean mIsSelectingThrowState;
     boolean mHasPlayerWon;
     boolean mHasComputerWon;
@@ -60,6 +69,15 @@ public class PlayGameActivity extends AppCompatActivity {
     ComputerController mComputerController;
     GameController mGameController;
 
+
+    RpsGame.OnGameStateChangedListener mOnGameStateChanged = new RpsGame.OnGameStateChangedListener() {
+        @Override
+        public void onGameStateChanged(RpsGame rpsGame) {
+            //TODO refresh the view
+
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +85,9 @@ public class PlayGameActivity extends AppCompatActivity {
 
         mComputerController = new ComputerController();
         mGameController = new GameController();
+
+        mRpsGame = new RpsGame();
+        mRpsGame.setmOnGameStateChangedListener(mOnGameStateChanged);
 
         initViews();
         initListeners();
@@ -186,7 +207,7 @@ public class PlayGameActivity extends AppCompatActivity {
     }
 
     public void setPlayerThrow(String move) {
-        int resource = getResourceFromSelection(move);
+        int resource = getDrawableToShowFromThrow(move);
         mPlayerThrowImageView.setImageResource(resource);
         mPlayerThrowResultContainer.setVisibility(View.VISIBLE);
         mPlayerThrowResultTextview.setText(move);
@@ -200,7 +221,7 @@ public class PlayGameActivity extends AppCompatActivity {
     }
 
     public void setComputerThrow(String move) {
-        int resource = getResourceFromSelection(move);
+        int resource = getDrawableToShowFromThrow(move);
 
         mComputerThrowImageview.setImageResource(resource);
         mComputerThrowResultContainer.setVisibility(View.VISIBLE);
@@ -208,7 +229,10 @@ public class PlayGameActivity extends AppCompatActivity {
         mComputerThrowChoiceState = move;
     }
 
-    private int getResourceFromSelection(String move) {
+    /**
+     * Method takes in a throw and returns a corresponding image to show
+     */
+    private int getDrawableToShowFromThrow(String move) {
         switch (move) {
             case Constants.ROCK:
                 return R.drawable.rock_image;

@@ -11,6 +11,8 @@
     <string name="rock">Rock</string>
     <string name="paper">Paper</string>
     <string name="scissors">Scissors</string>
+    <string name="illegal_move_no_move_thrown">Illegal Move! No Move Thrown!</string>
+    <string name="illegal_move_thrown_too_soon">Illegal Move! Thrown Too Early!</string>
 
     <string name="quit_game_menu">Quit</string>
     <string name="play_game_menu">Play Game</string>

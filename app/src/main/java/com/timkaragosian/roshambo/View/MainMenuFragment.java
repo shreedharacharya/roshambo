@@ -1,7 +1,6 @@
-package com.timkaragosian.roshambo;
+package com.timkaragosian.roshambo.View;
 
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
+import com.timkaragosian.roshambo.R;
 
 
 public class MainMenuFragment extends Fragment {

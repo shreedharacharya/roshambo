@@ -1,11 +1,11 @@
-package com.timkaragosian.roshambo;
+package com.timkaragosian.roshambo.View;
 
 import android.content.res.Configuration;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Window;
-import android.widget.Button;
+
+import com.timkaragosian.roshambo.R;
 
 public class MainActivity extends AppCompatActivity {
 

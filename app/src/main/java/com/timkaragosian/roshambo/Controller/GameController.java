@@ -1,6 +1,10 @@
-package com.timkaragosian.roshambo;
+package com.timkaragosian.roshambo.Controller;
 
 import android.os.Handler;
+
+import com.timkaragosian.roshambo.Model.Constants;
+import com.timkaragosian.roshambo.View.PlayGameActivity;
+import com.timkaragosian.roshambo.R;
 
 
 public class GameController {

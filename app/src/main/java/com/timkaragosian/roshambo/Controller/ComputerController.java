@@ -1,4 +1,6 @@
-package com.timkaragosian.roshambo;
+package com.timkaragosian.roshambo.Controller;
+
+import com.timkaragosian.roshambo.Model.Constants;
 
 import java.util.ArrayList;
 import java.util.Random;
