@@ -104,7 +104,7 @@ public class RpsGamePresenter {
             mRpsGame.setHasComputerWon(false);
         } else if ((mRpsGame.getPlayerThrowValue() == ROCK_THROW_VALUE && mRpsGame.getComputerThrowValue() == SCISSORS_THROW_VALUE) ||
                 (mRpsGame.getPlayerThrowValue() == PAPER_THROW_VALUE && mRpsGame.getComputerThrowValue() == ROCK_THROW_VALUE) ||
-                (mRpsGame.getPlayerThrowValue() == SCISSORS_THROW_VALUE && mRpsGame.getComputerThrowValue() == SCISSORS_THROW_VALUE)) {
+                (mRpsGame.getPlayerThrowValue() == SCISSORS_THROW_VALUE && mRpsGame.getComputerThrowValue() == PAPER_THROW_VALUE)) {
             mRpsGame.setHasPlayerWon(true);
             mRpsGame.setHasComputerWon(false);
             mRpsGame.setPlayerScore(mRpsGame.getPlayerScore() + 1);
