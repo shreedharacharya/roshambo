@@ -29,8 +29,8 @@ public class PlayGameActivity extends AppCompatActivity {
     private static final String PLAYER_SCORE_SAVE_STATE = "playerScore";
     private static final String COMPUTER_SCORE_SAVE_STATE = "computerScore";
     private static final String SECONDS_REMAINING_SAVE_STATE = "secondsRemaining";
-    private static final String PLAYER_THROW_VALUE_SAVE_STATE = "playerThrow";
-    private static final String COMPUTER_THROW_VALUE_SAVE_STATE = "computerThrow";
+    private static final String PLAYER_THROW_VALUE_SAVE_STATE = "playerThrowValue";
+    private static final String COMPUTER_THROW_VALUE_SAVE_STATE = "computerThrowValue";
     private static final String COMPUTER_THROW_IMAGE_SAVE_STATE = "computerThrowImage";
     private static final String PLAYER_THROW_IMAGE_SAVE_STATE = "playerThrowImage";
     private static final String COUNTDOWN_DESCRIPTION_VALUE_SAVE_STATE = "countdownDescription";
