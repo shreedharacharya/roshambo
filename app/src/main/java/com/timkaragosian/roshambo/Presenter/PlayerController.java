@@ -1,4 +1,4 @@
-package com.timkaragosian.roshambo.Controller;
+package com.timkaragosian.roshambo.Presenter;
 
 import com.timkaragosian.roshambo.Model.Constants;
 import com.timkaragosian.roshambo.View.PlayGameActivity;
@@ -14,7 +14,7 @@ public class PlayerController {
 
             if (playerMove.equals(computerMove)) {
                 playGameActivity.roundIsDraw();
-            } else if (playerMove.equals(Constants.ROCK) && computerMove.equals(Constants.SCISSORS) ||
+            } /*else if (playerMove.equals(Constants.ROCK) && computerMove.equals(Constants.SCISSORS) ||
                     playerMove.equals(Constants.PAPER) && computerMove.equals(Constants.ROCK) ||
                     playerMove.equals(Constants.SCISSORS) && computerMove.equals(Constants.PAPER)) {
                 playGameActivity.playerWins();
@@ -23,7 +23,7 @@ public class PlayerController {
             }
         } else {
             playGameActivity.computerWins();
-            playGameActivity.setPlayerThrow(Constants.ILLEGAL_MOVE_TOO_EARLY);
+            playGameActivity.setPlayerThrow(Constants.ILLEGAL_MOVE_TOO_EARLY);*/
         }
     }
 }

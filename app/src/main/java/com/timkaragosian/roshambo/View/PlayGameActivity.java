@@ -11,13 +11,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.timkaragosian.roshambo.Model.Constants;
-import com.timkaragosian.roshambo.Controller.ComputerController;
-import com.timkaragosian.roshambo.Controller.GameController;
-import com.timkaragosian.roshambo.Controller.PlayerController;
+import com.timkaragosian.roshambo.Presenter.ComputerController;
+import com.timkaragosian.roshambo.Presenter.GameController;
+import com.timkaragosian.roshambo.Presenter.PlayerController;
 import com.timkaragosian.roshambo.Model.RpsGame;
+import com.timkaragosian.roshambo.Presenter.RpsGamePresenter;
 import com.timkaragosian.roshambo.R;
 
-public class PlayGameActivity extends AppCompatActivity implements RpsGame.OnGameStateChangedListener {
+public class PlayGameActivity extends AppCompatActivity {
 
     private static final String SECONDS_REMAINING = "secondsRemaining";
     private static final String HAS_PLAYER_THROWN = "hasPlayerThrown";
@@ -53,8 +54,6 @@ public class PlayGameActivity extends AppCompatActivity implements RpsGame.OnGam
     String mComputerThrowChoiceState;
     String mPlayerThrowChoiceState;
 
-    RpsGame mRpsGame;
-
     boolean mIsSelectingThrowState;
     boolean mHasPlayerWon;
     boolean mHasComputerWon;
@@ -69,12 +68,62 @@ public class PlayGameActivity extends AppCompatActivity implements RpsGame.OnGam
     ComputerController mComputerController;
     GameController mGameController;
 
+    RpsGamePresenter mRpsGamePresenter;
 
-    RpsGame.OnGameStateChangedListener mOnGameStateChanged = new RpsGame.OnGameStateChangedListener() {
+    //updates the view with whatever state it is given from the presenter
+    RpsGamePresenter.OnGameStateChangedListener mOnGameStateChangedListener = new RpsGamePresenter.OnGameStateChangedListener() {
         @Override
         public void onGameStateChanged(RpsGame rpsGame) {
-            //TODO refresh the view
+            if (rpsGame.getIsGamePhaseCountDown()) {
+                mStartRoundButton.setVisibility(View.GONE);
+                mPlayerThrowChoicesContainer.setVisibility(View.VISIBLE);
+                mCountdownTextview.setVisibility(View.VISIBLE);
 
+                mComputerWinsTextview.setVisibility(View.GONE);
+                mPlayerWinsTextview.setVisibility(View.GONE);
+                mComputerThrowResultContainer.setVisibility(View.GONE);
+                mPlayerThrowResultContainer.setVisibility(View.GONE);
+
+                mCountdownTextview.setText(rpsGame.getCountDownDisplayValue());
+            } else if (rpsGame.getIsGamePhaseRoundComplete()) {
+                //setup basic view visibility
+                mPlayerThrowChoicesContainer.setVisibility(View.GONE);
+                mCountdownTextview.setVisibility(View.GONE);
+                mPlayerThrowResultContainer.setVisibility(View.VISIBLE);
+                mPlayerThrowResultTextview.setText(rpsGame.getPlayerMoveDescription());
+
+                //display moves where applicable
+                if (rpsGame.getPlayerThrowImage() != 0) {
+                    mPlayerThrowImageView.setImageDrawable(getResources().getDrawable(rpsGame.getPlayerThrowImage()));
+                }
+
+                if (rpsGame.getPlayerThrowValue() == RpsGamePresenter.ILLEGAL_THROW_TOO_EARLY_VALUE && rpsGame.getPlayerThrowValue() == RpsGamePresenter.ILLEGAL_THROW_TOO_LATE_VALUE) {
+                    mComputerThrowResultTextview.setVisibility(View.VISIBLE);
+                    mComputerThrowResultTextview.setText(rpsGame.getComputerMoveDescription());
+                    mComputerThrowResultContainer.setVisibility(View.VISIBLE);
+                    mComputerThrowImageview.setImageDrawable(getResources().getDrawable(rpsGame.getPlayerThrowImage()));
+                }
+
+                //display scores
+                mPlayerScoreTextview.setText(String.valueOf(rpsGame.getPlayerScore()));
+                mComputerScoreTextview.setText(String.valueOf(rpsGame.getComputerScore()));
+
+                //display winner indicator
+                if (rpsGame.getHasPlayerWon()) {
+                    mPlayerScoreTextview.setText(String.valueOf(rpsGame.getPlayerScore()));
+                    mPlayerWinsTextview.setText(R.string.player_wins);
+                    mPlayerWinsTextview.setVisibility(View.VISIBLE);
+                } else if (rpsGame.getHasComputerWon()) {
+                    mComputerWinsTextview.setText(R.string.computer_wins);
+                    mComputerWinsTextview.setVisibility(View.VISIBLE);
+                    mStartRoundButton.setVisibility(View.VISIBLE);
+                } else {
+                    mPlayerWinsTextview.setText(R.string.draw_result);
+                    mComputerWinsTextview.setText(R.string.draw_result);
+                    mPlayerWinsTextview.setVisibility(View.VISIBLE);
+                    mComputerWinsTextview.setVisibility(View.VISIBLE);
+                }
+            }
         }
     };
 
@@ -86,8 +135,7 @@ public class PlayGameActivity extends AppCompatActivity implements RpsGame.OnGam
         mComputerController = new ComputerController();
         mGameController = new GameController();
 
-        mRpsGame = new RpsGame();
-        mRpsGame.setmOnGameStateChangedListener(mOnGameStateChanged);
+        mRpsGamePresenter = new RpsGamePresenter(mOnGameStateChangedListener);
 
         initViews();
         initListeners();
@@ -124,8 +172,10 @@ public class PlayGameActivity extends AppCompatActivity implements RpsGame.OnGam
         mStartRoundButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCountdownTextview.setText(R.string.get_ready);
-                setupRound(3);
+                mRpsGamePresenter.startNewRound();
+
+                //mCountdownTextview.setText(R.string.get_ready);
+                //setupRound(3);
             }
         });
 
@@ -133,7 +183,7 @@ public class PlayGameActivity extends AppCompatActivity implements RpsGame.OnGam
             @Override
             public void onClick(View v) {
                 String computerMove = new ComputerController().computerMakesMove();
-                new PlayerController().playerThowsForResult(PlayGameActivity.this, Constants.ROCK, computerMove, mCanPlayerMakeLegalMove);
+                //new PlayerController().playerThowsForResult(PlayGameActivity.this, Constants.ROCK, computerMove, mCanPlayerMakeLegalMove);
 
                 mStartRoundButton.setVisibility(View.VISIBLE);
                 mComputerThrowImageview.setVisibility(View.VISIBLE);
@@ -146,7 +196,7 @@ public class PlayGameActivity extends AppCompatActivity implements RpsGame.OnGam
             @Override
             public void onClick(View v) {
                 String computerMove = new ComputerController().computerMakesMove();
-                new PlayerController().playerThowsForResult(PlayGameActivity.this, Constants.PAPER, computerMove, mCanPlayerMakeLegalMove);
+                //new PlayerController().playerThowsForResult(PlayGameActivity.this, Constants.PAPER, computerMove, mCanPlayerMakeLegalMove);
 
                 mComputerThrowImageview.setVisibility(View.VISIBLE);
                 mStartRoundButton.setVisibility(View.VISIBLE);
@@ -159,7 +209,7 @@ public class PlayGameActivity extends AppCompatActivity implements RpsGame.OnGam
             @Override
             public void onClick(View v) {
                 String computerMove = new ComputerController().computerMakesMove();
-                new PlayerController().playerThowsForResult(PlayGameActivity.this, Constants.SCISSORS, computerMove, mCanPlayerMakeLegalMove);
+                //new PlayerController().playerThowsForResult(PlayGameActivity.this, Constants.SCISSORS, computerMove, mCanPlayerMakeLegalMove);
 
                 mComputerThrowImageview.setVisibility(View.VISIBLE);
                 mStartRoundButton.setVisibility(View.VISIBLE);
@@ -234,7 +284,7 @@ public class PlayGameActivity extends AppCompatActivity implements RpsGame.OnGam
      */
     private int getDrawableToShowFromThrow(String move) {
         switch (move) {
-            case Constants.ROCK:
+            /*case Constants.ROCK:
                 return R.drawable.rock_image;
             case Constants.PAPER:
                 return R.drawable.paper;
@@ -242,7 +292,7 @@ public class PlayGameActivity extends AppCompatActivity implements RpsGame.OnGam
                 return R.drawable.scissors;
             case Constants.ILLEGAL_MOVE_NONE_THROWN:
             case Constants.ILLEGAL_MOVE_TOO_EARLY:
-                return R.drawable.illegal_move;
+                return R.drawable.illegal_move;*/
             default:
                 return 0;
         }

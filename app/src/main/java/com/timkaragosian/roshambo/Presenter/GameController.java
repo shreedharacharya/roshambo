@@ -1,4 +1,4 @@
-package com.timkaragosian.roshambo.Controller;
+package com.timkaragosian.roshambo.Presenter;
 
 import android.os.Handler;
 
@@ -36,7 +36,7 @@ public class GameController {
             public void run() {
                 if (!playGameActivity.mPlayerHasThrownThisRoundState) {
                     playGameActivity.computerWins();
-                    playGameActivity.setPlayerThrow(Constants.ILLEGAL_MOVE_NONE_THROWN);
+                    //playGameActivity.setPlayerThrow(Constants.ILLEGAL_MOVE_NONE_THROWN);
                 }
 
                 playGameActivity.mCanPlayerMakeLegalMove = false;

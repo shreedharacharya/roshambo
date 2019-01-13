@@ -1,4 +1,4 @@
-package com.timkaragosian.roshambo.Controller;
+package com.timkaragosian.roshambo.Presenter;
 
 import com.timkaragosian.roshambo.Model.Constants;
 
@@ -17,12 +17,12 @@ public class ComputerController {
         int selection = random.nextInt(2);
 
         switch (selection) {
-            case 0:
+            /*case 0:
                 return Constants.ROCK;
             case 1:
                 return Constants.PAPER;
             case 2:
-                return Constants.SCISSORS;
+                return Constants.SCISSORS;*/
             default:
                 return null;
         }
